@@ -10,8 +10,9 @@ public enum Gateways {
 	anxpro("ANXPro"),
 	bibox("Bibox"),
 	binance("Binance"),
+	kucoin("Kucoin"),
 	bittrex("Bittrex");
-	
+
 	private final String name;
 	Gateways(String name) {
         this.name = name;

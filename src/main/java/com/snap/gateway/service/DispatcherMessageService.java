@@ -3,6 +3,7 @@ package com.snap.gateway.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.knowm.xchange.dto.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,18 @@ public class DispatcherMessageService {
 			
 			// Determine handler for the current request.
 //			GatewayHandler handler = getHandler(req);
-			
-			handler.getPublicData();
+
+			OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, "");
+			handler.trade(order);
+
+//			handler.getPublicData();
 			
 			if (handler == null) {
 //				noHandlerFound(req);
 				return;
 			}
 			
-//			sender.send(request);
+			sender.send(request);
 		} catch (Exception ex) {
 			log.info("Invalid request format {}", request);
 			log.info("Exception Info: ", ex);
