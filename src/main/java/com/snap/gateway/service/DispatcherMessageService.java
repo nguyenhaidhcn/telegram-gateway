@@ -38,7 +38,7 @@ public class DispatcherMessageService {
 			// Determine handler for the current request.
 //			GatewayHandler handler = getHandler(req);
 
-			OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, "");
+			OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, Order.OrderStatus.NEW,"");
 			handler.trade(order);
 
 //			handler.getPublicData();

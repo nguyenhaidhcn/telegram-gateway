@@ -7,20 +7,35 @@ public class OrderRequest {
     String baseSymbol;
     String counterSymbol;
     double volume;
+
+    //buy sell...
     Order.OrderType type;
+
+    //new, cancel..
+    Order.OrderStatus status;
+
     CurrencyPair pair;
     String orderID;
 
 
-    public OrderRequest(String baseSymbol, String counterSymbol, double volume, Order.OrderType type, String orderID) {
+    public OrderRequest(String baseSymbol, String counterSymbol, double volume, Order.OrderType type, Order.OrderStatus status, String orderID) {
         this.baseSymbol = baseSymbol;
         this.counterSymbol = counterSymbol;
         this.volume = volume;
         this.type = type;
         this.orderID = orderID;
         pair = new CurrencyPair(baseSymbol, counterSymbol);
+        this.status = status;
     }
 
+
+    public Order.OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Order.OrderStatus status) {
+        this.status = status;
+    }
 
     public String getOrderID() {
         return orderID;
