@@ -1,12 +1,14 @@
 package com.snap.gateway.message;
 
+
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 
 public class OrderRequest {
     String baseSymbol;
     String counterSymbol;
-    double volume;
+    String volume;
+    String price;
 
     //buy sell...
     Order.OrderType type;
@@ -17,40 +19,20 @@ public class OrderRequest {
     CurrencyPair pair;
     String orderID;
 
+    public OrderRequest(String msg) {
 
-    public OrderRequest(String baseSymbol, String counterSymbol, double volume, Order.OrderType type, Order.OrderStatus status, String orderID) {
+
+    }
+
+    public OrderRequest(String baseSymbol, String counterSymbol, String volume, String price, Order.OrderType type, Order.OrderStatus status, CurrencyPair pair, String orderID) {
         this.baseSymbol = baseSymbol;
         this.counterSymbol = counterSymbol;
         this.volume = volume;
+        this.price = price;
         this.type = type;
-        this.orderID = orderID;
-        pair = new CurrencyPair(baseSymbol, counterSymbol);
         this.status = status;
-    }
-
-
-    public Order.OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(Order.OrderStatus status) {
-        this.status = status;
-    }
-
-    public String getOrderID() {
-        return orderID;
-    }
-
-    public void setOrderID(String orderID) {
-        this.orderID = orderID;
-    }
-
-    public CurrencyPair getPair() {
-        return pair;
-    }
-
-    public void setPair(CurrencyPair pair) {
         this.pair = pair;
+        this.orderID = orderID;
     }
 
     public String getBaseSymbol() {
@@ -69,12 +51,20 @@ public class OrderRequest {
         this.counterSymbol = counterSymbol;
     }
 
-    public double getVolume() {
+    public String getVolume() {
         return volume;
     }
 
-    public void setVolume(double volume) {
+    public void setVolume(String volume) {
         this.volume = volume;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public Order.OrderType getType() {
@@ -83,5 +73,29 @@ public class OrderRequest {
 
     public void setType(Order.OrderType type) {
         this.type = type;
+    }
+
+    public Order.OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Order.OrderStatus status) {
+        this.status = status;
+    }
+
+    public CurrencyPair getPair() {
+        return pair;
+    }
+
+    public void setPair(CurrencyPair pair) {
+        this.pair = pair;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
     }
 }
