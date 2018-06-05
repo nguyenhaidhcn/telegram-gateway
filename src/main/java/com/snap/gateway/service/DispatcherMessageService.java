@@ -64,7 +64,7 @@ public class DispatcherMessageService {
 				return;
 			}
 			
-			sender.send(request);
+			sender.send(gson.toJson(order));
 		} catch (Exception ex) {
 			log.info("Invalid request format {}", request);
 			log.info("Exception Info: ", ex);

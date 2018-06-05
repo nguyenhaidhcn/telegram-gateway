@@ -69,6 +69,8 @@ public class KucoinHandler implements GatewayHandler {
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			orderRequest.setResultCode(-1);
+			orderRequest.setErrorMsg(e.getMessage());
 		}
 	}
 
@@ -91,7 +93,7 @@ public class KucoinHandler implements GatewayHandler {
 		try {
 			String uuid = tradeService.placeLimitOrder(limitOrder);
 			System.out.println("Order successfully placed. ID=" + uuid);
-
+			orderRequest.setOrderID(uuid);
 			Thread.sleep(7000); // wait for order to propagate
 
 			System.out.println();
@@ -102,6 +104,8 @@ public class KucoinHandler implements GatewayHandler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			orderRequest.setResultCode(-1);
+			orderRequest.setErrorMsg(e.getMessage());
 		}
 	}
 
@@ -137,6 +141,8 @@ public class KucoinHandler implements GatewayHandler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			orderRequest.setResultCode(-1);
+			orderRequest.setErrorMsg(e.getMessage());
 		}
 	}
 

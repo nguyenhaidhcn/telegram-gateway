@@ -18,13 +18,16 @@ public class OrderRequest {
 
     CurrencyPair pair;
     String orderID;
+    String msgID;
+    int resultCode;
+    String errorMsg;
 
     public OrderRequest(String msg) {
 
 
     }
 
-    public OrderRequest(String baseSymbol, String counterSymbol, String volume, String price, Order.OrderType type, Order.OrderStatus status, CurrencyPair pair, String orderID) {
+    public OrderRequest(String baseSymbol, String counterSymbol, String volume, String price, Order.OrderType type, Order.OrderStatus status, CurrencyPair pair, String orderID, String msgID, int resultCode, String errorMsg) {
         this.baseSymbol = baseSymbol;
         this.counterSymbol = counterSymbol;
         this.volume = volume;
@@ -33,6 +36,9 @@ public class OrderRequest {
         this.status = status;
         this.pair = pair;
         this.orderID = orderID;
+        this.msgID = msgID;
+        this.resultCode = resultCode;
+        this.errorMsg = errorMsg;
     }
 
     public String getBaseSymbol() {
@@ -97,5 +103,29 @@ public class OrderRequest {
 
     public void setOrderID(String orderID) {
         this.orderID = orderID;
+    }
+
+    public String getMsgID() {
+        return msgID;
+    }
+
+    public void setMsgID(String msgID) {
+        this.msgID = msgID;
+    }
+
+    public int getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }
