@@ -33,18 +33,38 @@ public class KucoinHandler implements GatewayHandler {
 	private static final Logger log = LoggerFactory.getLogger(KucoinHandler.class);
 
 	@Override
-	public void trade(OrderRequest orderRequest) {
+	public void trade(OrderRequest orderRequest)
+	{
 		ExchangeSpecification exSpec = new KucoinExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
 		exSpec.setApiKey("5b120d483232925061499e66");
 		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
 		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
-		try {
+		try
+		{
+			switch (orderRequest.getStatus())
+			{
+				case NEW:
+				{
+					this.OpenLimit(kucoin.getTradeService(), orderRequest);
+					break;
+				}
 
-			this.OpenLimit(kucoin.getTradeService(), orderRequest);
+				case PENDING_CANCEL:
+				{
+					this.CancelLimit(kucoin.getTradeService(), orderRequest);
+					break;
+				}
 
-			this.CancelLimit(kucoin.getTradeService(), orderRequest);
+				default:
+				{
+					System.out.printf("not support status: %s", orderRequest.getStatus());
+					break;
+				}
+			}
+
+
 		}
 		catch (IOException e)
 		{
@@ -64,7 +84,7 @@ public class KucoinHandler implements GatewayHandler {
 
 		LimitOrder limitOrder =
 				new LimitOrder.Builder(orderRequest.getType(), orderRequest.getPair())
-						.limitPrice(new BigDecimal("0.001"))
+						.limitPrice(new BigDecimal(orderRequest.getPrice()))
 						.originalAmount(new BigDecimal(orderRequest.getVolume()))
 						.build();
 

@@ -43,15 +43,15 @@ public class DispatcherMessageService {
 
 
 			Gson gson = new Gson();
-			request = "{" +
-					"\"baseSymbol\":\"LTC\"," +
-					"\"counterSymbol\":\"BTC\"," +
-					"\"volume\":\"0.01\"," +
-					"\"type\":\"BID\"," +
-					"\"status\":\"NEW\"," +
-					"\"price\":\"0.001\"," +
-					"\"orderID\":\"sdlkjigio\""+
-					"}";
+//			request = "{" +
+//					"\"baseSymbol\":\"LTC\"," +
+//					"\"counterSymbol\":\"BTC\"," +
+//					"\"volume\":\"0.01\"," +
+//					"\"type\":\"BID\"," +
+//					"\"status\":\"NEW\"," +
+//					"\"price\":\"0.001\"," +
+//					"\"orderID\":\"sdlkjigio\""+
+//					"}";
 			OrderRequest order = gson.fromJson(request, OrderRequest.class);
 			order.setPair(new CurrencyPair(order.getBaseSymbol(), order.getCounterSymbol()));
 			//OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, Order.OrderStatus.NEW,"");
