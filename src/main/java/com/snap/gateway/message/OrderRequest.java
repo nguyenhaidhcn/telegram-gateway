@@ -11,10 +11,13 @@ public class OrderRequest {
     String price;
 
     //buy sell...
+    int side;
+
+    //buy sell...
     Order.OrderType type;
 
     //new, cancel..
-    Order.OrderStatus status;
+    int orderState;
 
     CurrencyPair pair;
     String orderID;
@@ -27,13 +30,21 @@ public class OrderRequest {
 
     }
 
-    public OrderRequest(String baseSymbol, String counterSymbol, String volume, String price, Order.OrderType type, Order.OrderStatus status, CurrencyPair pair, String orderID, String msgID, int resultCode, String errorMsg) {
+    public Order.OrderType getType() {
+        return type;
+    }
+
+    public void setType(Order.OrderType type) {
+        this.type = type;
+    }
+
+    public OrderRequest(String baseSymbol, String counterSymbol, String volume, String price, int side, int orderState, CurrencyPair pair, String orderID, String msgID, int resultCode, String errorMsg) {
         this.baseSymbol = baseSymbol;
         this.counterSymbol = counterSymbol;
         this.volume = volume;
         this.price = price;
-        this.type = type;
-        this.status = status;
+        this.side = side;
+        this.orderState = orderState;
         this.pair = pair;
         this.orderID = orderID;
         this.msgID = msgID;
@@ -73,20 +84,20 @@ public class OrderRequest {
         this.price = price;
     }
 
-    public Order.OrderType getType() {
-        return type;
+    public int getSide() {
+        return side;
     }
 
-    public void setType(Order.OrderType type) {
-        this.type = type;
+    public void setSide(int side) {
+        this.side = side;
     }
 
-    public Order.OrderStatus getStatus() {
-        return status;
+    public int getOrderState() {
+        return orderState;
     }
 
-    public void setStatus(Order.OrderStatus status) {
-        this.status = status;
+    public void setOrderState(int orderState) {
+        this.orderState = orderState;
     }
 
     public CurrencyPair getPair() {

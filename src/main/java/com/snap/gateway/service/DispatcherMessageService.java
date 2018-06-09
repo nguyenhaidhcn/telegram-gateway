@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.snap.gateway.message.MsgRequest;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.slf4j.Logger;
@@ -52,10 +53,10 @@ public class DispatcherMessageService {
 //					"\"price\":\"0.001\"," +
 //					"\"orderID\":\"sdlkjigio\""+
 //					"}";
-			OrderRequest order = gson.fromJson(request, OrderRequest.class);
-			order.setPair(new CurrencyPair(order.getBaseSymbol(), order.getCounterSymbol()));
+			MsgRequest msgRequest = gson.fromJson(request, MsgRequest.class);
+			msgRequest.getOrderRequest().setPair(new CurrencyPair(msgRequest.getOrderRequest().getBaseSymbol(), msgRequest.getOrderRequest().getCounterSymbol()));
 			//OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, Order.OrderStatus.NEW,"");
-			handler.trade(order);
+			handler.trade(msgRequest.getOrderRequest());
 
 //			handler.getPublicData();
 			
@@ -63,8 +64,11 @@ public class DispatcherMessageService {
 //				noHandlerFound(req);
 				return;
 			}
-			
-			sender.send(gson.toJson(order));
+
+			msgRequest.setResultCode(msgRequest.getOrderRequest().getResultCode());
+			msgRequest.setErrorMsg(msgRequest.getOrderRequest().getErrorMsg());
+
+			sender.send(gson.toJson(msgRequest));
 		} catch (Exception ex) {
 			log.info("Invalid request format {}", request);
 			log.info("Exception Info: ", ex);

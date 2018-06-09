@@ -2,10 +2,11 @@ package com.snap.gateway.handler.kucoin;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
+import com.snap.gateway.common.Gateways;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
+import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.kucoin.KucoinExchange;
@@ -28,6 +29,55 @@ import org.springframework.stereotype.Component;
 import com.snap.gateway.handler.GatewayHandler;
 import com.snap.gateway.message.OrderRequest;
 
+enum SnapOrderType
+{
+	NOUSE,
+	LIMIT,
+	MARKET ,
+	ALGO,
+	MIDPOINT ,
+	STOP 		,
+	STOP_LIMIT 	,
+	MTL 		,
+	PASSIVE 	,
+	ODDLOT 		,
+	PASS2AGGR 	,
+	FORCE 		,
+	SHORTS 		,
+	FPS 		, //FORCE + SHORT
+	SESOPEN 	,
+	SESPRECLS 	,
+	OrderTypeMax
+
+};
+
+enum SnapOrderState
+{
+	NOUSE,
+	PENDING,
+	PLACED ,
+	PARTIALFILL,
+	FILLED 	,
+	CXL_PENDING,
+	CXLD 		,
+	RPL_PENDING ,
+	RPLD 		,
+	REJECTED 	,
+	REJECTED_SNAP ,
+	CXL_REJ 	,
+	RPL_REJ 	,
+	RPLD_SNAP 	,
+	EXPD 		,
+	OrderStateMax
+};
+
+enum Side
+{
+	NOUSE,
+	BUY 	,
+	SELL 	,
+	SideMax
+}
 @Component
 public class KucoinHandler implements GatewayHandler {
 	private static final Logger log = LoggerFactory.getLogger(KucoinHandler.class);
@@ -43,28 +93,29 @@ public class KucoinHandler implements GatewayHandler {
 
 		try
 		{
-			switch (orderRequest.getStatus())
-			{
-				case NEW:
-				{
-					this.OpenLimit(kucoin.getTradeService(), orderRequest);
-					break;
-				}
+		    if (orderRequest.getSide() == Side.BUY.ordinal())
+            {
+                orderRequest.setType(Order.OrderType.BID);
+            }
+            else
+                orderRequest.setType(Order.OrderType.ASK);
 
-				case PENDING_CANCEL:
-				{
-					this.CancelLimit(kucoin.getTradeService(), orderRequest);
-					break;
-				}
-
-				default:
-				{
-					System.out.printf("not support status: %s", orderRequest.getStatus());
-					break;
-				}
-			}
-
-
+		    if(orderRequest.getOrderState() ==  SnapOrderState.PENDING.ordinal())
+            {
+                this.OpenLimit(kucoin.getTradeService(), orderRequest);
+            }
+            else if(orderRequest.getOrderState() ==  SnapOrderState.PLACED.ordinal())
+            {
+                this.OpenLimit(kucoin.getTradeService(), orderRequest);
+            }
+			else if (orderRequest.getOrderState() == SnapOrderState.CXL_PENDING.ordinal())
+            {
+                this.CancelLimit(kucoin.getTradeService(), orderRequest);
+            }
+            else {
+		        orderRequest.setErrorMsg("not support order State");
+		        orderRequest.setResultCode(-1);
+            }
 		}
 		catch (IOException e)
 		{
