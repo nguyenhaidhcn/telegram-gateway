@@ -95,8 +95,8 @@ public class KucoinHandler implements GatewayHandler {
 	{
 		ExchangeSpecification exSpec = new KucoinExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey("5b120d483232925061499e66");
-		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
+		exSpec.setApiKey(ApiKey);
+		exSpec.setSecretKey(SecretKey);
 		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try
