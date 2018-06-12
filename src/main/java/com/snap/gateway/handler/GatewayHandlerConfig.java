@@ -1,5 +1,7 @@
 package com.snap.gateway.handler;
 
+import com.snap.gateway.handler.binance.BinanceHandler;
+import com.snap.gateway.handler.binance.BinanceHandlerCondition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -35,5 +37,12 @@ public class GatewayHandlerConfig {
 	public GatewayHandler getKuconHandler() {
 		return new KucoinHandler();
 	}
+
+	@Bean(name="handler")
+	@Conditional(value=BinanceHandlerCondition.class)
+	public GatewayHandler getBinanceHandler() {
+		return new BinanceHandler();
+	}
+
 
 }

@@ -9,7 +9,7 @@ import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.trade.LimitOrder;
-import org.knowm.xchange.kucoin.KucoinExchange;
+import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.marketdata.OrderBook;
@@ -85,10 +85,10 @@ public class BinanceHandler implements GatewayHandler {
 	@Override
 	public void trade(OrderRequest orderRequest)
 	{
-		ExchangeSpecification exSpec = new KucoinExchange().getDefaultExchangeSpecification();
+		ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey("5b120d483232925061499e66");
-		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
+		exSpec.setApiKey("O8K6nh1kCiLnUiuoBBHH8bEKBnCWRF7GwMcDOFzfzWLPTLoW04ghLfSQtzZB0o02");
+		exSpec.setSecretKey("KuTWKKovlZrjWiFFKLiD41Iz6oOEpQqTYevGM7QcaASm5TzZXBaAkiVXUeBiOUe5");
 		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try
@@ -128,7 +128,7 @@ public class BinanceHandler implements GatewayHandler {
 
 	public void OpenLimit(TradeService tradeService, OrderRequest orderRequest) throws IOException {
 
-		ExchangeSpecification exSpec = new KucoinExchange().getDefaultExchangeSpecification();
+		ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
 		exSpec.setApiKey("5b120d483232925061499e66");
 		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
@@ -163,7 +163,7 @@ public class BinanceHandler implements GatewayHandler {
 
 	public void CancelLimit(TradeService tradeService, OrderRequest orderRequest) throws IOException {
 
-		ExchangeSpecification exSpec = new KucoinExchange().getDefaultExchangeSpecification();
+		ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
 		exSpec.setApiKey("5b120d483232925061499e66");
 		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
@@ -206,7 +206,7 @@ public class BinanceHandler implements GatewayHandler {
 	@Override
 	public void getPublicData() throws IOException {
 		log.info("Get public data from binance");
-		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(KucoinExchange.class.getName());
+		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BinanceExchange.class.getName());
 	    MarketDataService marketDataService = exchange.getMarketDataService();
 	    
 	    Ticker ticker = marketDataService.getTicker(new CurrencyPair("LTC", "BTC"));
