@@ -11,7 +11,7 @@ public class BinanceHandlerCondition implements Condition {
 	@Override
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		String gatewayName = context.getEnvironment().getProperty("gateway.name");
-		return Gateways.kucoin.value().equalsIgnoreCase(gatewayName);
+		return Gateways.binance.value().equalsIgnoreCase(gatewayName);
 	}
 
 }
