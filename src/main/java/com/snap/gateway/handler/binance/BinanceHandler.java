@@ -24,6 +24,7 @@ import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurre
 import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.snap.gateway.handler.GatewayHandler;
@@ -82,13 +83,19 @@ enum Side
 public class BinanceHandler implements GatewayHandler {
 	private static final Logger log = LoggerFactory.getLogger(BinanceHandler.class);
 
+	@Value("${api.key}")
+	private String ApiKey;
+
+	@Value("${secret.key}")
+	private String SecretKey;
+
 	@Override
 	public void trade(OrderRequest orderRequest)
 	{
 		ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey("O8K6nh1kCiLnUiuoBBHH8bEKBnCWRF7GwMcDOFzfzWLPTLoW04ghLfSQtzZB0o02");
-		exSpec.setSecretKey("KuTWKKovlZrjWiFFKLiD41Iz6oOEpQqTYevGM7QcaASm5TzZXBaAkiVXUeBiOUe5");
+		exSpec.setApiKey(ApiKey);
+		exSpec.setSecretKey(SecretKey);
 		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try

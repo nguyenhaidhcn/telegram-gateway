@@ -24,6 +24,7 @@ import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurre
 import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.snap.gateway.handler.GatewayHandler;
@@ -81,6 +82,13 @@ enum Side
 @Component
 public class KucoinHandler implements GatewayHandler {
 	private static final Logger log = LoggerFactory.getLogger(KucoinHandler.class);
+
+	@Value("${api.key}")
+	private String ApiKey;
+
+	@Value("${secret.key}")
+	private String SecretKey;
+
 
 	@Override
 	public void trade(OrderRequest orderRequest)
