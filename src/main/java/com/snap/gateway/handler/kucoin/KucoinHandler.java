@@ -3,9 +3,11 @@ package com.snap.gateway.handler.kucoin;
 import java.io.IOException;
 import java.math.BigDecimal;
 import com.snap.gateway.common.Gateways;
+import com.snap.gateway.message.MsgRequest;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
+import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.trade.LimitOrder;
@@ -223,5 +225,36 @@ public class KucoinHandler implements GatewayHandler {
 	    OrderBook books = marketDataService.getOrderBook(new CurrencyPair("LTC", "BTC"), 10);
 	    System.out.println(books.toString());
 	    
+	}
+
+
+	/**
+	 *
+	 * @throws IOException
+	 */
+	@Override
+	public void getPosition(MsgRequest request) {
+		log.info("Get open position");
+
+		try {
+			ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
+			exSpec.setUserName("34387");
+			exSpec.setApiKey(ApiKey);
+			exSpec.setSecretKey(SecretKey);
+			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
+
+			DefaultOpenOrdersParamCurrencyPair orderParams =
+					(DefaultOpenOrdersParamCurrencyPair) exchange.getTradeService().createOpenOrdersParams();
+			orderParams.setCurrencyPair(request.getOrderRequest().getPair());
+			System.out.println(exchange.getTradeService().getOpenOrders(orderParams));
+
+			request.setOpenOrders(exchange.getTradeService().getOpenOrders(orderParams));
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			request.setResultCode(-1);
+			request.setErrorMsg(ex.getMessage());
+		}
 	}
 }

@@ -56,8 +56,14 @@ public class DispatcherMessageService {
 			MsgRequest msgRequest = gson.fromJson(request, MsgRequest.class);
 			msgRequest.getOrderRequest().setPair(new CurrencyPair(msgRequest.getOrderRequest().getBaseSymbol(), msgRequest.getOrderRequest().getCounterSymbol()));
 			//OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, Order.OrderStatus.NEW,"");
-			handler.trade(msgRequest.getOrderRequest());
+			if (msgRequest.getMsgType() == 2) {
+				handler.getPosition(msgRequest);
+			}
+			else
+			{
+				handler.trade(msgRequest.getOrderRequest());
 
+			}
 //			handler.getPublicData();
 			
 			if (handler == null) {
