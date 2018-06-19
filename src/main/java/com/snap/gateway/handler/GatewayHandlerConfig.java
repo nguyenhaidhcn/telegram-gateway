@@ -6,9 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.snap.gateway.handler.bibox.BiboxHandler;
-import com.snap.gateway.handler.bibox.BiboxHandlerCondition;
-
 //import com.snap.gateway.handler.bittrex.BittrexHandler;
 //import com.snap.gateway.handler.bittrex.BittrexHandlerCondition;
 
@@ -27,9 +24,9 @@ public class GatewayHandlerConfig {
 //	}
 	
 //	@Bean(name="handler")
-//	@Conditional(value=BiboxHandlerCondition.class)
+//	@Conditional(value=BitboxHandlerCondition.class)
 //	public GatewayHandler getBiboxxHandler() {
-//		return new BiboxHandler();
+//		return new BitboxHandler();
 //	}
 ////
 	@Bean(name="handler")

@@ -1,4 +1,4 @@
-package com.snap.gateway.handler.bibox;
+package com.snap.gateway.handler.bitbox;
 
 import java.io.IOException;
 
@@ -6,22 +6,21 @@ import com.snap.gateway.message.MsgRequest;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
-import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.bitbox.BitboxExchange;
 import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.snap.gateway.handler.GatewayHandler;
-import com.snap.gateway.handler.bibox.BiboxHandler;
 import com.snap.gateway.message.OrderRequest;
 import org.springframework.beans.factory.annotation.Value;
 
-public class BiboxHandler implements GatewayHandler {
-	private static final Logger log = LoggerFactory.getLogger(BiboxHandler.class);
+public class BitboxHandler implements GatewayHandler {
+	private static final Logger log = LoggerFactory.getLogger(BitboxHandler.class);
 
 	@Override
 	public void trade(OrderRequest order) {
-		log.info("BIBOX Order Request");
+		log.info("BITBOX Order Request");
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public class BiboxHandler implements GatewayHandler {
 		log.info("Get open position");
 
 		try {
-			ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
+			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 			exSpec.setUserName("34387");
 			exSpec.setApiKey(ApiKey);
 			exSpec.setSecretKey(SecretKey);

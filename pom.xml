@@ -58,6 +58,14 @@
 
 
 		<dependency>
+			<groupId>org.knowm.xchange</groupId>
+			<artifactId>xchange-bitbox</artifactId>
+			<version>4.3.7-SNAPSHOT</version>
+		</dependency>
+
+
+
+		<dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
         </dependency>

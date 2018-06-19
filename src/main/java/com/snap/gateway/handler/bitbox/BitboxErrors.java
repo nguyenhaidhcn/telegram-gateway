@@ -1,4 +1,4 @@
-package com.snap.gateway.handler.bibox;
+package com.snap.gateway.handler.bitbox;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
