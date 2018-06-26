@@ -2,6 +2,8 @@ package com.snap.gateway.handler;
 
 import com.snap.gateway.handler.binance.BinanceHandler;
 import com.snap.gateway.handler.binance.BinanceHandlerCondition;
+import com.snap.gateway.handler.bitbox.BitboxHandler;
+import com.snap.gateway.handler.bitbox.BitboxHandlerCondition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +42,13 @@ public class GatewayHandlerConfig {
 	public GatewayHandler getBinanceHandler() {
 		return new BinanceHandler();
 	}
+
+	@Bean(name="handler")
+	@Conditional(value=BitboxHandlerCondition.class)
+	public GatewayHandler getBitboxHandler() {
+		return new BitboxHandler();
+	}
+
 
 
 }

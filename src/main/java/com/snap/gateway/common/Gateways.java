@@ -8,7 +8,7 @@ public enum Gateways {
 	acx("ACX"),
 	allcoin("Allcoin"),
 	anxpro("ANXPro"),
-	bibox("Bibox"),
+	bibox("Bitbox"),
 	binance("Binance"),
 	kucoin("Kucoin"),
 	bittrex("Bittrex");
