@@ -153,13 +153,13 @@ public class BitboxHandler implements GatewayHandler {
 			String uuid = tradeService.placeLimitOrder(limitOrder);
 			System.out.println("Order successfully placed. ID=" + uuid);
 			orderRequest.setOrderID(uuid);
-			Thread.sleep(7000); // wait for order to propagate
-
-			System.out.println();
-			DefaultOpenOrdersParamCurrencyPair orderParams =
-					(DefaultOpenOrdersParamCurrencyPair) tradeService.createOpenOrdersParams();
-			orderParams.setCurrencyPair(orderRequest.getPair());
-			System.out.println(tradeService.getOpenOrders(orderParams));
+//			Thread.sleep(7000); // wait for order to propagate
+//
+//			System.out.println();
+//			DefaultOpenOrdersParamCurrencyPair orderParams =
+//					(DefaultOpenOrdersParamCurrencyPair) tradeService.createOpenOrdersParams();
+//			orderParams.setCurrencyPair(orderRequest.getPair());
+//			System.out.println(tradeService.getOpenOrders(orderParams));
 
 		} catch (Exception e) {
 			e.printStackTrace();
