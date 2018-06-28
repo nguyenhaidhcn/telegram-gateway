@@ -255,4 +255,11 @@ public class BinanceHandler implements GatewayHandler {
 			request.setErrorMsg(ex.getMessage());
 		}
 	}
+
+	@Override
+	public void getHistory(MsgRequest request){
+		log.info("Get history");
+
+	}
+
 }

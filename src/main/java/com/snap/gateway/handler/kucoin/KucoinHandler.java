@@ -2,12 +2,15 @@ package com.snap.gateway.handler.kucoin;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
+
 import com.snap.gateway.common.Gateways;
 import com.snap.gateway.message.MsgRequest;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.bitbox.BitboxExchange;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.trade.LimitOrder;
@@ -22,6 +25,7 @@ import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.CancelOrderParams;
+import org.knowm.xchange.service.trade.params.TradeHistoryParamsAll;
 import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
 import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
 import org.slf4j.Logger;
@@ -256,5 +260,11 @@ public class KucoinHandler implements GatewayHandler {
 			request.setResultCode(-1);
 			request.setErrorMsg(ex.getMessage());
 		}
+	}
+
+	@Override
+	public void getHistory(MsgRequest request){
+		log.info("Get history");
+
 	}
 }

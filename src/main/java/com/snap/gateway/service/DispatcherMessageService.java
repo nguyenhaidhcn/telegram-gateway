@@ -59,10 +59,14 @@ public class DispatcherMessageService {
 			if (msgRequest.getMsgType() == 2) {
 				handler.getPosition(msgRequest);
 			}
-			else
+			else if (msgRequest.getMsgType() == 1)
 			{
 				handler.trade(msgRequest.getOrderRequest());
 
+			}
+			else if (msgRequest.getMsgType() == 3)
+			{
+				handler.getHistory(msgRequest);
 			}
 //			handler.getPublicData();
 			

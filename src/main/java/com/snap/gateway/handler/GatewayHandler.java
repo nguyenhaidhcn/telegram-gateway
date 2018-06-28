@@ -9,4 +9,5 @@ public interface GatewayHandler {
 	void trade(OrderRequest order);
 	void getPublicData() throws IOException;
 	void getPosition(MsgRequest request);
+	void getHistory(MsgRequest request);
 }

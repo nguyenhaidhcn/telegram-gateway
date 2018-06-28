@@ -4,6 +4,7 @@ package com.snap.gateway.message;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.trade.OpenOrders;
+import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
 
 public class MsgRequest {
@@ -18,9 +19,9 @@ public class MsgRequest {
     OrderRequest orderRequest;
 
     OpenOrders openOrders;
+    UserTrades userTrades;
 
-    public MsgRequest(int resultCode, String errorMsg, String exchange, String msgID, int msgType, OrderRequest orderRequest, OpenOrders openOrders) {
-
+    public MsgRequest(int resultCode, String errorMsg, String exchange, String msgID, int msgType, OrderRequest orderRequest, OpenOrders openOrders, UserTrades userTrades) {
         this.resultCode = resultCode;
         this.errorMsg = errorMsg;
         this.exchange = exchange;
@@ -28,6 +29,7 @@ public class MsgRequest {
         this.msgType = msgType;
         this.orderRequest = orderRequest;
         this.openOrders = openOrders;
+        this.userTrades = userTrades;
     }
 
     public int getResultCode() {
@@ -84,5 +86,13 @@ public class MsgRequest {
 
     public void setOpenOrders(OpenOrders openOrders) {
         this.openOrders = openOrders;
+    }
+
+    public UserTrades getUserTrades() {
+        return userTrades;
+    }
+
+    public void setUserTrades(UserTrades userTrades) {
+        this.userTrades = userTrades;
     }
 }

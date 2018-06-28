@@ -2,6 +2,8 @@ package com.snap.gateway.handler.bitbox;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
+
 import com.snap.gateway.common.Gateways;
 import com.snap.gateway.message.MsgRequest;
 import org.knowm.xchange.Exchange;
@@ -21,6 +23,7 @@ import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.CancelOrderParams;
+import org.knowm.xchange.service.trade.params.TradeHistoryParamsAll;
 import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
 import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
 import org.slf4j.Logger;
@@ -97,7 +100,7 @@ public class BitboxHandler implements GatewayHandler {
 		exSpec.setUserName("34387");
 		exSpec.setApiKey(ApiKey);
 		exSpec.setSecretKey(SecretKey);
-		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
+		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try
 		{
@@ -110,20 +113,22 @@ public class BitboxHandler implements GatewayHandler {
 
 			if(orderRequest.getOrderState() ==  SnapOrderState.PENDING.ordinal())
 			{
-				this.OpenLimit(kucoin.getTradeService(), orderRequest);
+				this.OpenLimit(bitbox.getTradeService(), orderRequest);
 			}
 			else if(orderRequest.getOrderState() ==  SnapOrderState.PLACED.ordinal())
 			{
-				this.OpenLimit(kucoin.getTradeService(), orderRequest);
+				this.OpenLimit(bitbox.getTradeService(), orderRequest);
 			}
 			else if (orderRequest.getOrderState() == SnapOrderState.CXL_PENDING.ordinal())
 			{
-				this.CancelLimit(kucoin.getTradeService(), orderRequest);
+				this.CancelLimit(bitbox.getTradeService(), orderRequest);
 			}
 			else {
 				orderRequest.setErrorMsg("not support order State");
 				orderRequest.setResultCode(-1);
 			}
+
+
 		}
 		catch (IOException e)
 		{
@@ -247,6 +252,34 @@ public class BitboxHandler implements GatewayHandler {
 			System.out.println(exchange.getTradeService().getOpenOrders(orderParams));
 
 			request.setOpenOrders(exchange.getTradeService().getOpenOrders(orderParams));
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			request.setResultCode(-1);
+			request.setErrorMsg(ex.getMessage());
+		}
+	}
+
+	@Override
+	public void getHistory(MsgRequest request){
+		log.info("Get history");
+		try {
+			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
+			exSpec.setUserName("34387");
+			exSpec.setApiKey(ApiKey);
+			exSpec.setSecretKey(SecretKey);
+			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
+
+			TradeHistoryParamsAll tradeHistoryParamsAll = new TradeHistoryParamsAll();
+			tradeHistoryParamsAll.setCurrencyPair(request.getOrderRequest().getPair());
+			Date endTime = new Date();
+			Date startTime = new Date(endTime.getTime()-10000);
+			tradeHistoryParamsAll.setEndTime(endTime);
+			tradeHistoryParamsAll.setStartTime(startTime);
+
+
+			request.setUserTrades(exchange.getTradeService().getTradeHistory(tradeHistoryParamsAll));
 		}
 		catch (Exception ex)
 		{
