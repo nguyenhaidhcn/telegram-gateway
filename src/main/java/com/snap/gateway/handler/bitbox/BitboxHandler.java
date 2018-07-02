@@ -2,7 +2,10 @@ package com.snap.gateway.handler.bitbox;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.snap.gateway.common.Gateways;
 import com.snap.gateway.message.MsgRequest;
@@ -90,6 +93,7 @@ enum Side
 @Component
 public class BitboxHandler implements GatewayHandler {
 	private static final Logger log = LoggerFactory.getLogger(BitboxHandler.class);
+	private static long lastHitory = 0;
 
 	@Value("${api.key}")
 	private String ApiKey;
@@ -270,13 +274,23 @@ public class BitboxHandler implements GatewayHandler {
 
 			TradeHistoryParamsAll tradeHistoryParamsAll = new TradeHistoryParamsAll();
 			tradeHistoryParamsAll.setCurrencyPair(request.getOrderRequest().getPair());
-			Date endTime = new Date();
-			Date startTime = new Date(endTime.getTime()-10000);
+
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+
+			//set if last history = 0, init last history
+			System.out.println("Lasthistory: " + lastHitory);
+			if(lastHitory ==0) lastHitory =cal.getTimeInMillis();
+
+			Date startTime = new Date(lastHitory);
+			Date endTime = new Date(cal.getTimeInMillis());
 			tradeHistoryParamsAll.setEndTime(endTime);
 			tradeHistoryParamsAll.setStartTime(startTime);
 
 			UserTrades userTrades = exchange.getTradeService().getTradeHistory(tradeHistoryParamsAll);
 			request.setUserTrades(userTrades);
+			lastHitory = endTime.getTime();
+			System.out.println("Lasthistory: " + lastHitory);
 		}
 		catch (Exception ex)
 		{
