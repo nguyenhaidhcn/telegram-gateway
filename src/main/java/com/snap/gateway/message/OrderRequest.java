@@ -31,6 +31,11 @@ public class OrderRequest {
 
     }
 
+    public OrderRequest() {
+
+
+    }
+
     public Order.OrderType getType() {
         return type;
     }

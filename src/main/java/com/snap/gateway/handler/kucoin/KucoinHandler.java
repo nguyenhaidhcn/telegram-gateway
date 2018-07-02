@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.snap.gateway.common.Gateways;
 import com.snap.gateway.message.MsgRequest;
+import com.snap.gateway.message.QuoteRequest;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
@@ -266,5 +267,11 @@ public class KucoinHandler implements GatewayHandler {
 	public void getHistory(MsgRequest request){
 		log.info("Get history");
 
+	}
+
+	@Override
+	public void quoteProcess(QuoteRequest quoteRequest)
+	{
+		log.info("quoteProcess");
 	}
 }

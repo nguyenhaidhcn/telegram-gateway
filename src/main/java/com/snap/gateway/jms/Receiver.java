@@ -15,14 +15,15 @@ public class Receiver {
 	@Autowired
 	private DispatcherMessageService dispatcher;
 	
-	@JmsListener(destination = "${OrderRequest.Queue}", containerFactory = "connectionFactory")
+	@JmsListener(destination = "${OrderRequest.Topic}", containerFactory = "connectionFactory")
     public void receiveQueue(String request) {
 		dispatcher.processRequest(request);
     }
 	
-	@JmsListener(destination = "${OrderResponse.Topic}", containerFactory = "connectionFactory")
+	@JmsListener(destination = "${Quote.Topic}", containerFactory = "connectionFactory")
     public void receiveTopic(String request) {
-		log.info(request);
+		//log.info(request);
 		//dispatcher.processRequest(request);
+		dispatcher.processQuote(request);
     }
 }

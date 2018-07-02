@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.snap.gateway.message.MsgRequest;
+import com.snap.gateway.message.QuoteRequest;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.slf4j.Logger;
@@ -36,23 +37,8 @@ public class DispatcherMessageService {
 	public void processRequest(String request) {
 		try {
 
-			log.info("REQUEST received -- {}", request);
-//			OrderRequest req = MAPPER.readValue(request, OrderRequest.class);
-			
-			// Determine handler for the current request.
-//			GatewayHandler handler = getHandler(req);
-
-
+			log.info("OrderRequest received -- {}", request);
 			Gson gson = new Gson();
-//			request = "{" +
-//					"\"baseSymbol\":\"LTC\"," +
-//					"\"counterSymbol\":\"BTC\"," +
-//					"\"volume\":\"0.01\"," +
-//					"\"type\":\"BID\"," +
-//					"\"status\":\"NEW\"," +
-//					"\"price\":\"0.001\"," +
-//					"\"orderID\":\"sdlkjigio\""+
-//					"}";
 			MsgRequest msgRequest = gson.fromJson(request, MsgRequest.class);
 			msgRequest.getOrderRequest().setPair(new CurrencyPair(msgRequest.getOrderRequest().getBaseSymbol(), msgRequest.getOrderRequest().getCounterSymbol()));
 			//OrderRequest order = new OrderRequest("LTC", "BTC", 0.01, Order.OrderType.ASK, Order.OrderStatus.NEW,"");
@@ -85,7 +71,32 @@ public class DispatcherMessageService {
 			
 		}
 	}
-	
+
+
+	public void processQuote(String request) {
+		try {
+
+			log.info("processQuote received -- {}", request);
+			Gson gson = new Gson();
+
+			QuoteRequest msgRequest = gson.fromJson(request, QuoteRequest.class);
+			//get open position
+
+			//cancel order
+
+			//place new order
+			handler.quoteProcess(msgRequest);
+
+
+		} catch (Exception ex) {
+			log.info("Invalid request format {}", request);
+			log.info("Exception Info: ", ex);
+
+		}
+	}
+
+
+
 	private void initGatewayMappings () {
 		
 	}

@@ -6,6 +6,8 @@ import java.util.Date;
 
 import com.snap.gateway.common.Gateways;
 import com.snap.gateway.message.MsgRequest;
+import com.snap.gateway.message.Quote;
+import com.snap.gateway.message.QuoteRequest;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
@@ -18,6 +20,8 @@ import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.trade.OpenOrders;
+import org.knowm.xchange.dto.trade.UserTrade;
+import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.kucoin.service.KucoinCancelOrderParams;
 import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.marketdata.MarketDataService;
@@ -158,13 +162,6 @@ public class BitboxHandler implements GatewayHandler {
 			String uuid = tradeService.placeLimitOrder(limitOrder);
 			System.out.println("Order successfully placed. ID=" + uuid);
 			orderRequest.setOrderID(uuid);
-//			Thread.sleep(7000); // wait for order to propagate
-//
-//			System.out.println();
-//			DefaultOpenOrdersParamCurrencyPair orderParams =
-//					(DefaultOpenOrdersParamCurrencyPair) tradeService.createOpenOrdersParams();
-//			orderParams.setCurrencyPair(orderRequest.getPair());
-//			System.out.println(tradeService.getOpenOrders(orderParams));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -278,8 +275,8 @@ public class BitboxHandler implements GatewayHandler {
 			tradeHistoryParamsAll.setEndTime(endTime);
 			tradeHistoryParamsAll.setStartTime(startTime);
 
-
-			request.setUserTrades(exchange.getTradeService().getTradeHistory(tradeHistoryParamsAll));
+			UserTrades userTrades = exchange.getTradeService().getTradeHistory(tradeHistoryParamsAll);
+			request.setUserTrades(userTrades);
 		}
 		catch (Exception ex)
 		{
@@ -288,4 +285,79 @@ public class BitboxHandler implements GatewayHandler {
 			request.setErrorMsg(ex.getMessage());
 		}
 	}
+
+	@Override
+	public void quoteProcess(QuoteRequest quoteRequest)
+	{
+		log.info("quoteProcess");
+		//get open order
+		OrderRequest orderRequest = new OrderRequest();
+		orderRequest.setBaseSymbol(quoteRequest.baseSymbol);
+		orderRequest.setCounterSymbol(quoteRequest.counterSymbol);
+		orderRequest.setPair(new CurrencyPair(quoteRequest.baseSymbol, quoteRequest.counterSymbol));
+		MsgRequest msgRequest = new MsgRequest(0, "","", "",0,orderRequest, null, null);
+
+		//get position
+		this.getPosition(msgRequest);
+		OpenOrders openOrders = msgRequest.getOpenOrders();
+
+		//cancel order
+		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
+		exSpec.setUserName("34387");
+		exSpec.setApiKey(ApiKey);
+		exSpec.setSecretKey(SecretKey);
+		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
+
+		for (LimitOrder limitOrder:openOrders.getOpenOrders()
+			 ) {
+
+			orderRequest.setOrderID(limitOrder.getId());
+			try {
+				this.CancelLimit(bitbox.getTradeService(), orderRequest);
+			} catch (IOException e) {
+
+				e.printStackTrace();
+				log.error("cannot cancel order:", orderRequest.getOrderID());
+			}
+
+		}
+
+
+		//open buy.
+		for (Quote quote:quoteRequest.bids
+			 ) {
+			try {
+				orderRequest.setType(Order.OrderType.BID);
+				orderRequest.setVolume(quote.quantity.toString());
+				orderRequest.setPrice(quote.price.toString());
+				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+			} catch (IOException e)
+			{
+				log.error(e.getMessage());
+				log.error("Cannot place order");
+			}
+
+		}
+
+		//open sell
+
+		for (Quote quote:quoteRequest.asks
+				) {
+			try {
+				orderRequest.setType(Order.OrderType.ASK);
+				orderRequest.setVolume(quote.quantity.toString());
+				orderRequest.setPrice(quote.price.toString());
+				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+			} catch (IOException e)
+			{
+				log.error(e.getMessage());
+				log.error("Cannot place order");
+			}
+
+		}
+
+
+	}
+
+
 }
