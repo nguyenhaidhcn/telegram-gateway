@@ -7,7 +7,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.google.gson.Gson;
 import com.snap.gateway.common.Gateways;
+import com.snap.gateway.jms.Sender;
 import com.snap.gateway.message.MsgRequest;
 import com.snap.gateway.message.Quote;
 import com.snap.gateway.message.QuoteRequest;
@@ -35,6 +37,7 @@ import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurre
 import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -100,6 +103,12 @@ public class BitboxHandler implements GatewayHandler {
 
 	@Value("${secret.key}")
 	private String SecretKey;
+
+	@Value("${OrderHedge.Topic}")
+	private String OrderHedgeTopic;
+
+	@Autowired
+	private Sender sender;
 
 	@Override
 	public void trade(OrderRequest orderRequest)
@@ -291,6 +300,47 @@ public class BitboxHandler implements GatewayHandler {
 			request.setUserTrades(userTrades);
 			lastHitory = endTime.getTime();
 			System.out.println("Lasthistory: " + lastHitory);
+
+			//hedging to binance
+			if(userTrades.getUserTrades().size() == 0)
+			{
+				System.out.println("history null");
+				return;
+			}
+
+			for (UserTrade userTrade:userTrades.getUserTrades()
+				 ) {
+				OrderRequest orderRequest = new OrderRequest();
+				orderRequest.setPrice(userTrade.getPrice().toString());
+				orderRequest.setBaseSymbol(userTrade.getCurrencyPair().base.getSymbol());
+				orderRequest.setCounterSymbol(userTrade.getCurrencyPair().counter.getSymbol());
+				orderRequest.setVolume(userTrade.getOriginalAmount().toString());
+				orderRequest.setPair(userTrade.getCurrencyPair());
+				Order.OrderType orderType = Order.OrderType.BID;
+				int orderSide = -1;
+				if (userTrade.getType() == Order.OrderType.BID) {
+					orderType = Order.OrderType.ASK;
+					orderSide = 2;
+				}
+
+				if (userTrade.getType() == Order.OrderType.ASK) {
+					orderType = Order.OrderType.BID;
+					orderSide = 1;
+				}
+
+				orderRequest.setType(orderType);
+				orderRequest.setSide(orderSide);
+				int orderState = SnapOrderState.PENDING.ordinal();
+				orderRequest.setOrderState(orderState);
+
+				MsgRequest msgRequest = new MsgRequest(0, "","","", 1,orderRequest,null, null);
+				Gson gson = new Gson();
+
+				log.info("Send hedge order to:"+ OrderHedgeTopic );
+				sender.send(OrderHedgeTopic, gson.toJson(msgRequest));
+			}
+
+
 		}
 		catch (Exception ex)
 		{
@@ -370,6 +420,8 @@ public class BitboxHandler implements GatewayHandler {
 
 		}
 
+		//get history check hedging
+		this.getHistory(msgRequest);
 
 	}
 
