@@ -365,6 +365,12 @@ public class BitboxHandler implements GatewayHandler {
 		this.getPosition(msgRequest);
 		OpenOrders openOrders = msgRequest.getOpenOrders();
 
+		if(openOrders.getOpenOrders() == null)
+		{
+			log.info("no open order:" + msgRequest.getOrderRequest().getPair().toString());
+			return;
+		}
+
 		//cancel order
 		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
@@ -393,7 +399,8 @@ public class BitboxHandler implements GatewayHandler {
 			try {
 				orderRequest.setType(Order.OrderType.BID);
 				orderRequest.setVolume(quote.quantity.toString());
-				orderRequest.setPrice(quote.price.toString());
+				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+				orderRequest.setPrice(price.toString());
 				this.OpenLimit(bitbox.getTradeService(), orderRequest);
 			} catch (IOException e)
 			{
@@ -410,7 +417,8 @@ public class BitboxHandler implements GatewayHandler {
 			try {
 				orderRequest.setType(Order.OrderType.ASK);
 				orderRequest.setVolume(quote.quantity.toString());
-				orderRequest.setPrice(quote.price.toString());
+				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+				orderRequest.setPrice(price.toString());
 				this.OpenLimit(bitbox.getTradeService(), orderRequest);
 			} catch (IOException e)
 			{

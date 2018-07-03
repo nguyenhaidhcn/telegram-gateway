@@ -6,11 +6,11 @@ import java.util.List;
 
 public class QuoteRequest {
     public final String symbol;
-    public final String baseSymbol;
-    public final String counterSymbol;
+    public  String baseSymbol;
+    public  String counterSymbol;
     public final List<Quote> asks;
     public final List<Quote> bids;
-    public final Integer digit;
+    public  Integer digit;
     public final String exchange;
     public final String msgType;
 

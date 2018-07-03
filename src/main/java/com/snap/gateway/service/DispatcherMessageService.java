@@ -80,6 +80,18 @@ public class DispatcherMessageService {
 			Gson gson = new Gson();
 
 			QuoteRequest msgRequest = gson.fromJson(request, QuoteRequest.class);
+			//init base.counter symbol
+			String symbol = msgRequest.symbol;
+			symbol = symbol.toUpperCase();
+			msgRequest.baseSymbol = symbol.substring(0,3);
+			msgRequest.counterSymbol = symbol.substring(3,symbol.length());
+			if (msgRequest.counterSymbol.compareTo("USDT") == 0)
+			{
+				msgRequest.digit = 2;
+			}
+			else {
+				msgRequest.digit = 8;
+			}
 			//get open position
 
 			//cancel order
