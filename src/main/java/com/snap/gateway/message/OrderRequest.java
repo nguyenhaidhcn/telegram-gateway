@@ -58,6 +58,24 @@ public class OrderRequest {
         this.errorMsg = errorMsg;
     }
 
+
+    public OrderRequest( OrderRequest request) {
+        this.baseSymbol = request.baseSymbol;
+        this.counterSymbol = request.counterSymbol;
+        this.volume = request.volume;
+        this.price = request.price;
+        this.side = request.side;
+        this.orderState = request.orderState;
+        this.pair = request.pair;
+        this.orderID = request.orderID;
+        this.msgID = request.msgID;
+        this.resultCode = request.resultCode;
+        this.errorMsg = request.errorMsg;
+        this.type = request.type;
+    }
+
+
+
     public String getBaseSymbol() {
         return baseSymbol;
     }
@@ -65,6 +83,10 @@ public class OrderRequest {
     public void setBaseSymbol(String baseSymbol) {
         this.baseSymbol = baseSymbol;
     }
+
+//    public Object clone() throws CloneNotSupportedException {
+//        return super.clone();
+//    }
 
     public String getCounterSymbol() {
         return counterSymbol;
