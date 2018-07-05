@@ -3,9 +3,7 @@ package com.snap.gateway.handler.bitbox;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.snap.gateway.common.Gateways;
@@ -354,6 +352,14 @@ public class BitboxHandler implements GatewayHandler {
 	public void quoteProcess(QuoteRequest quoteRequest)
 	{
 		log.info("quoteProcess");
+
+		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
+		exSpec.setUserName("34387");
+		exSpec.setApiKey(ApiKey);
+		exSpec.setSecretKey(SecretKey);
+		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
+
+
 		//get open order
 		OrderRequest orderRequest = new OrderRequest();
 		orderRequest.setBaseSymbol(quoteRequest.baseSymbol);
@@ -367,69 +373,176 @@ public class BitboxHandler implements GatewayHandler {
 
 		if(openOrders.getOpenOrders() == null)
 		{
-			log.info("no open order:" + msgRequest.getOrderRequest().getPair().toString());
-			return;
+			openOrders = new OpenOrders(new ArrayList<>(), new ArrayList<>());
 		}
 
-		//cancel order
-		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
-		exSpec.setUserName("34387");
-		exSpec.setApiKey(ApiKey);
-		exSpec.setSecretKey(SecretKey);
-		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
+		//syc bids
+		List<Quote> quotes = quoteRequest.bids;
+		List<LimitOrder> limitOrders = new ArrayList<>(openOrders.getOpenOrders());
+		SycBidAsk(bitbox.getTradeService()
+				, quotes ,
+				Order.OrderType.BID,
+				limitOrders,
+				orderRequest,
+				quoteRequest.digit);
 
-		for (LimitOrder limitOrder:openOrders.getOpenOrders()
-			 ) {
+		//syc ask
+		quotes = quoteRequest.asks;
+		limitOrders = limitOrders = new ArrayList<>(openOrders.getOpenOrders());
+		SycBidAsk(bitbox.getTradeService()
+				, quotes ,
+				Order.OrderType.ASK,
+				limitOrders,
+				orderRequest,
+				quoteRequest.digit);
 
+
+//		//cancel order
+//		for (LimitOrder limitOrder:openOrders.getOpenOrders()
+//				) {
+//
+//			orderRequest.setOrderID(limitOrder.getId());
+//			try {
+//				this.CancelLimit(bitbox.getTradeService(), orderRequest);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//				log.error("cannot cancel order:", orderRequest.getOrderID());
+//			}
+//
+//		}
+//
+//		//open buy.
+//		for (Quote quote:quoteRequest.bids
+//			 ) {
+//			try {
+//				orderRequest.setType(Order.OrderType.BID);
+//				orderRequest.setVolume(quote.quantity.toString());
+//				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+//				orderRequest.setPrice(price.toString());
+//				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+//			} catch (IOException e)
+//			{
+//				log.error(e.getMessage());
+//				log.error("Cannot place order");
+//			}
+//
+//		}
+//
+//		//open sell
+//		for (Quote quote:quoteRequest.asks
+//				) {
+//			try {
+//				orderRequest.setType(Order.OrderType.ASK);
+//				orderRequest.setVolume(quote.quantity.toString());
+//				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+//				orderRequest.setPrice(price.toString());
+//				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+//			} catch (IOException e)
+//			{
+//				log.error(e.getMessage());
+//				log.error("Cannot place order");
+//			}
+//
+//		}
+
+		//get history check hedging
+		this.getHistory(msgRequest);
+
+	}
+
+	public void SycBidAsk(TradeService tradeService,
+							 List<Quote> quotes,
+							 Order.OrderType orderType,
+							 List<LimitOrder> limitOrders,
+							 OrderRequest orderRequest,
+						     Integer digit){
+		//filter order type
+		Iterator iteratorOrder = limitOrders.iterator();
+		while (iteratorOrder.hasNext())
+		{
+			LimitOrder limitOrder = (LimitOrder)iteratorOrder.next();
+			if(limitOrder.getType() != orderType)
+//				limitOrders.remove(limitOrder);
+				iteratorOrder.remove();
+		}
+
+		//compare side bid ask.
+		if(quotes.size() != limitOrders.size())
+		{
+			log.error("Diffirent quote size: " + quotes.size() + "limit size:" + limitOrders.size());
+			//do cancel all, reopen all
+		}
+
+		//make compare. remove quote, limit order equal
+		Iterator quoteInterator = quotes.iterator();
+
+		while (quoteInterator.hasNext())
+		{
+			Quote quote = (Quote)quoteInterator.next();
+			//looking Limit order.
+			Iterator limitOrderInterator = limitOrders.iterator();
+			while (limitOrderInterator.hasNext())
+			{
+				LimitOrder limitOrder = (LimitOrder)limitOrderInterator.next();
+				if (quote.quantity == limitOrder.getOriginalAmount()
+						&& quote.price == limitOrder.getLimitPrice())
+				{
+					quoteInterator.remove();
+					limitOrderInterator.remove();
+				}
+			}
+		}
+
+		//do cancel, open one by one
+		for(LimitOrder limitOrder:limitOrders)
+		{
+			//do cancel
 			orderRequest.setOrderID(limitOrder.getId());
 			try {
-				this.CancelLimit(bitbox.getTradeService(), orderRequest);
+				this.CancelLimit(tradeService, orderRequest);
 			} catch (IOException e) {
 
 				e.printStackTrace();
 				log.error("cannot cancel order:", orderRequest.getOrderID());
 			}
 
-		}
+			//do open.
+			if(quotes.size() > 0) {
+				Quote quote = quotes.get(0);
+				try {
+					orderRequest.setType(orderType);
+					orderRequest.setVolume(quote.quantity.toString());
+					BigDecimal price = quote.price.setScale(digit, BigDecimal.ROUND_HALF_UP);
+					orderRequest.setPrice(price.toString());
+					this.OpenLimit(tradeService, orderRequest);
+				} catch (IOException e) {
+					log.error(e.getMessage());
+					log.error("Cannot place order");
+				}
 
-
-		//open buy.
-		for (Quote quote:quoteRequest.bids
-			 ) {
-			try {
-				orderRequest.setType(Order.OrderType.BID);
-				orderRequest.setVolume(quote.quantity.toString());
-				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
-				orderRequest.setPrice(price.toString());
-				this.OpenLimit(bitbox.getTradeService(), orderRequest);
-			} catch (IOException e)
-			{
-				log.error(e.getMessage());
-				log.error("Cannot place order");
+				quotes.remove(quote);
 			}
-
 		}
 
-		//open sell
 
-		for (Quote quote:quoteRequest.asks
-				) {
-			try {
-				orderRequest.setType(Order.OrderType.ASK);
-				orderRequest.setVolume(quote.quantity.toString());
-				BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
-				orderRequest.setPrice(price.toString());
-				this.OpenLimit(bitbox.getTradeService(), orderRequest);
-			} catch (IOException e)
-			{
-				log.error(e.getMessage());
-				log.error("Cannot place order");
+		//do open if remain.
+		if(quotes.size() > 0) {
+			for(Quote quote:quotes) {
+				try {
+					orderRequest.setType(orderType);
+					orderRequest.setVolume(quote.quantity.toString());
+					BigDecimal price = quote.price.setScale(digit, BigDecimal.ROUND_HALF_UP);
+					orderRequest.setPrice(price.toString());
+					this.OpenLimit(tradeService, orderRequest);
+				} catch (IOException e) {
+					log.error(e.getMessage());
+					log.error("Cannot place order");
+				}
 			}
-
 		}
 
-		//get history check hedging
-		this.getHistory(msgRequest);
+
 
 	}
 

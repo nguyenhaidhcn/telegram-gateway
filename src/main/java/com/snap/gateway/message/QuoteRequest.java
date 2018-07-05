@@ -8,8 +8,8 @@ public class QuoteRequest {
     public final String symbol;
     public  String baseSymbol;
     public  String counterSymbol;
-    public final List<Quote> asks;
-    public final List<Quote> bids;
+    public  List<Quote> asks;
+    public  List<Quote> bids;
     public  Integer digit;
     public final String exchange;
     public final String msgType;

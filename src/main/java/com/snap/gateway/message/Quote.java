@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 public class Quote
 
 {
+
     public final BigDecimal price;
     public final BigDecimal quantity;
 

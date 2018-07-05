@@ -90,7 +90,7 @@ public class DispatcherMessageService {
 				msgRequest.digit = 2;
 			}
 			else {
-				msgRequest.digit = 8;
+				msgRequest.digit = 6;
 			}
 			//get open position
 
