@@ -2,6 +2,7 @@ package com.snap.gateway.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
 import java.util.List;
 
 public class QuoteRequest {
@@ -13,6 +14,7 @@ public class QuoteRequest {
     public  Integer digit;
     public final String exchange;
     public final String msgType;
+    public long id;
 
     public QuoteRequest(
             @JsonProperty("symbol") String symbol,
@@ -32,5 +34,6 @@ public class QuoteRequest {
         this.msgType = msgType;
         this.baseSymbol = baseSymbol;
         this.counterSymbol = counterSymbol;
+        this.id = new Date().getTime();
     }
 }

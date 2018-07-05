@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.snap.gateway.service.DispatcherMessageService;
 
+import java.util.Date;
 import java.util.Map;
 
 @Component
@@ -51,7 +52,7 @@ public class Receiver {
 		else {
 			msgRequest.digit = 6;
 		}
-
+		msgRequest.id = new Date().getTime();
 		Map<String, QuoteRequest>  stringQuoteRequestMap = ShareObjectQuote.getMap();
 		stringQuoteRequestMap.put(msgRequest.symbol, msgRequest);
 

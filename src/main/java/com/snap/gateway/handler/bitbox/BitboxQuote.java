@@ -37,7 +37,7 @@ public class BitboxQuote implements Runnable{
     private static long lastHitory = 0;
     private final String symbol;
     private int count = 0;
-
+    private long lastID = 0;
     public BitboxQuote(String sym) {
         this.symbol = sym;
     }
@@ -190,10 +190,42 @@ public class BitboxQuote implements Runnable{
 				orderRequest.setPrice(price.toString());
 //				this.OpenLimit(bitbox.getTradeService(), orderRequest);
                 OrderRequest order = new OrderRequest(orderRequest);
-                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
                 new Thread(threadPlaceOrder).start();
+//            try {
+//                Thread.sleep(10);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 		}
 
+            Thread.sleep(5);
+		for (Quote quote:quoteRequest.bids
+                    ) {
+                orderRequest.setType(Order.OrderType.BID);
+                orderRequest.setVolume(quote.quantity.toString());
+                BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+                price = price.add(BigDecimal.valueOf(0.001));
+                orderRequest.setPrice(price.toString());
+//				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+                OrderRequest order = new OrderRequest(orderRequest);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
+                new Thread(threadPlaceOrder).start();
+            }
+            Thread.sleep(5);
+            for (Quote quote:quoteRequest.bids
+                    ) {
+                orderRequest.setType(Order.OrderType.BID);
+                orderRequest.setVolume(quote.quantity.toString());
+                BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+                price = price.add(BigDecimal.valueOf(0.002));
+                orderRequest.setPrice(price.toString());
+//				this.OpenLimit(bitbox.getTradeService(), orderRequest);
+                OrderRequest order = new OrderRequest(orderRequest);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
+                new Thread(threadPlaceOrder).start();
+            }
+            Thread.sleep(5);
 		//open sell
 		for (Quote quote:quoteRequest.asks
 				) {
@@ -203,11 +235,48 @@ public class BitboxQuote implements Runnable{
 				orderRequest.setPrice(price.toString());
 
                 OrderRequest order = new OrderRequest(orderRequest);
-                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
                 new Thread(threadPlaceOrder).start();
+//            try {
+//                Thread.sleep(10);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 		}
+            Thread.sleep(5);
+            for (Quote quote:quoteRequest.asks
+                    ) {
+                orderRequest.setType(Order.OrderType.ASK);
+                orderRequest.setVolume(quote.quantity.toString());
+                BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+                price = price.add(BigDecimal.valueOf(0.001));
+                orderRequest.setPrice(price.toString());
 
-        Thread.sleep(50);
+                OrderRequest order = new OrderRequest(orderRequest);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
+                new Thread(threadPlaceOrder).start();
+            }
+            Thread.sleep(5);
+            for (Quote quote:quoteRequest.asks
+                    ) {
+                orderRequest.setType(Order.OrderType.ASK);
+                orderRequest.setVolume(quote.quantity.toString());
+                BigDecimal price = quote.price.setScale(quoteRequest.digit, BigDecimal.ROUND_HALF_UP);
+                price = price.add(BigDecimal.valueOf(0.002));
+                orderRequest.setPrice(price.toString());
+
+                OrderRequest order = new OrderRequest(orderRequest);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(bitbox.getTradeService(), order, false);
+                new Thread(threadPlaceOrder).start();
+            }
+
+
+        Thread.sleep(100);
+//            try {
+//                Thread.sleep(50);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
         }
         catch (Exception ex)
@@ -256,6 +325,7 @@ public class BitboxQuote implements Runnable{
                 orderRequest,
                 quoteRequest.digit);
 
+
         //syc ask
         quotes = quoteRequest.asks;
         limitOrders = limitOrders = new ArrayList<>(openOrders.getOpenOrders());
@@ -290,6 +360,8 @@ public class BitboxQuote implements Runnable{
         {
             log.error("Diffirent quote size: " + quotes.size() + "limit size:" + limitOrders.size());
             //do cancel all, reopen all
+//            if(quotes.size() == 0)
+//                return;
         }
 
         //make compare. remove quote, limit order equal
@@ -317,45 +389,50 @@ public class BitboxQuote implements Runnable{
         {
             //do cancel
             orderRequest.setOrderID(limitOrder.getId());
-            try {
-                this.CancelLimit(tradeService, orderRequest, false);
-            } catch (IOException e) {
 
+            OrderRequest orderCancel = new OrderRequest(orderRequest);
+            ThreadPlaceOrder threadPlaceOrderCancel = new ThreadPlaceOrder(tradeService, orderCancel, true);
+            new Thread(threadPlaceOrderCancel).start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-                log.error("cannot cancel order:", orderRequest.getOrderID());
             }
 
             //do open.
             if(quotes.size() > 0) {
                 Quote quote = quotes.get(0);
+                orderRequest.setType(orderType);
+                orderRequest.setVolume(quote.quantity.toString());
+                BigDecimal price = quote.price.setScale(digit, BigDecimal.ROUND_HALF_UP);
+                orderRequest.setPrice(price.toString());
+//                this.OpenLimit(tradeService, orderRequest);
+                OrderRequest order = new OrderRequest(orderRequest);
+                ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(tradeService, order, false);
+                new Thread(threadPlaceOrder).start();
                 try {
-                    orderRequest.setType(orderType);
-                    orderRequest.setVolume(quote.quantity.toString());
-                    BigDecimal price = quote.price.setScale(digit, BigDecimal.ROUND_HALF_UP);
-                    orderRequest.setPrice(price.toString());
-                    this.OpenLimit(tradeService, orderRequest);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                    log.error("Cannot place order");
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
                 quotes.remove(quote);
             }
         }
 
-
         //do open if remain.
         if(quotes.size() > 0) {
             for(Quote quote:quotes) {
-                try {
                     orderRequest.setType(orderType);
                     orderRequest.setVolume(quote.quantity.toString());
                     BigDecimal price = quote.price.setScale(digit, BigDecimal.ROUND_HALF_UP);
                     orderRequest.setPrice(price.toString());
-                    this.OpenLimit(tradeService, orderRequest);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                    log.error("Cannot place order");
+                    OrderRequest order = new OrderRequest(orderRequest);
+                    ThreadPlaceOrder threadPlaceOrder = new ThreadPlaceOrder(tradeService, order, false);
+                    new Thread(threadPlaceOrder).start();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -377,6 +454,14 @@ public class BitboxQuote implements Runnable{
                     continue;
                 }
 
+                //check lastID
+                if(this.lastID == quoteRequest.id && this.lastID >0)
+                {
+                    Thread.sleep(50);
+                    continue;
+                }
+
+                this.lastID = quoteRequest.id;
                 count ++;
                 log.info(quoteRequest.symbol +":" + count);
                 this.quoteProcess_2(quoteRequest);
