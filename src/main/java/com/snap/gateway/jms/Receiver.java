@@ -24,6 +24,10 @@ public class Receiver {
     public void receiveTopic(String request) {
 		//log.info(request);
 		//dispatcher.processRequest(request);
-		dispatcher.processQuote(request);
+
+		Runnable playerOne = new DispatcherMessageService();
+		((DispatcherMessageService) playerOne).msg = request;
+		new Thread(playerOne).start();
+//		dispatcher.processQuote(request);
     }
 }

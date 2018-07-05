@@ -113,8 +113,8 @@ public class BitboxHandler implements GatewayHandler {
 	{
 		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey(ApiKey);
-		exSpec.setSecretKey(SecretKey);
+		exSpec.setApiKey("4ib5UQizAobI06yu");
+		exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
 		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try
@@ -250,8 +250,8 @@ public class BitboxHandler implements GatewayHandler {
 		try {
 			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 			exSpec.setUserName("34387");
-			exSpec.setApiKey(ApiKey);
-			exSpec.setSecretKey(SecretKey);
+			exSpec.setApiKey("4ib5UQizAobI06yu");
+			exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
 			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 			DefaultOpenOrdersParamCurrencyPair orderParams =
@@ -275,8 +275,8 @@ public class BitboxHandler implements GatewayHandler {
 		try {
 			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 			exSpec.setUserName("34387");
-			exSpec.setApiKey(ApiKey);
-			exSpec.setSecretKey(SecretKey);
+			exSpec.setApiKey("4ib5UQizAobI06yu");
+			exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
 			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 			TradeHistoryParamsAll tradeHistoryParamsAll = new TradeHistoryParamsAll();
@@ -355,8 +355,8 @@ public class BitboxHandler implements GatewayHandler {
 
 		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey(ApiKey);
-		exSpec.setSecretKey(SecretKey);
+		exSpec.setApiKey("4ib5UQizAobI06yu");
+		exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
 		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 
@@ -370,6 +370,8 @@ public class BitboxHandler implements GatewayHandler {
 		//get position
 		this.getPosition(msgRequest);
 		OpenOrders openOrders = msgRequest.getOpenOrders();
+
+
 
 		if(openOrders.getOpenOrders() == null)
 		{
@@ -447,7 +449,7 @@ public class BitboxHandler implements GatewayHandler {
 //		}
 
 		//get history check hedging
-		this.getHistory(msgRequest);
+//		this.getHistory(msgRequest);
 
 	}
 

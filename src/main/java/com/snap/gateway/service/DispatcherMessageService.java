@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.snap.gateway.handler.bitbox.BitboxHandler;
 import com.snap.gateway.message.MsgRequest;
 import com.snap.gateway.message.QuoteRequest;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -19,11 +20,13 @@ import com.snap.gateway.jms.Sender;
 import com.snap.gateway.message.OrderRequest;
 
 @Service
-public class DispatcherMessageService {
+public class DispatcherMessageService implements Runnable{
 	private static final Logger log = LoggerFactory.getLogger(DispatcherMessageService.class);
 	private ObjectMapper MAPPER = new ObjectMapper();
 	private Map<String, GatewayHandler> gatewayMapping = new HashMap<>();
-	
+
+	public String msg;
+
 	@Autowired
 	private Sender sender;
 	
@@ -97,6 +100,7 @@ public class DispatcherMessageService {
 			//cancel order
 
 			//place new order
+			handler = new BitboxHandler();
 			handler.quoteProcess(msgRequest);
 
 
@@ -119,5 +123,11 @@ public class DispatcherMessageService {
 	
 	private void noHandlerFound(OrderRequest req) {
 		//StringFor
+	}
+
+	@Override
+	public void run() {
+
+		this.processQuote(msg);
 	}
 }
