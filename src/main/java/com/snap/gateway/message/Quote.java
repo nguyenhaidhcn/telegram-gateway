@@ -8,8 +8,24 @@ public class Quote
 
 {
 
-    public final BigDecimal price;
-    public final BigDecimal quantity;
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public  BigDecimal price;
+    public  BigDecimal quantity;
 
     public Quote(
             @JsonProperty("price") BigDecimal price,

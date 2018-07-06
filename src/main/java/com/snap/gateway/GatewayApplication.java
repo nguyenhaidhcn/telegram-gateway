@@ -16,6 +16,11 @@ public class GatewayApplication {
 			BitboxQuote bitboxQuote = new BitboxQuote("ETHBTC");
 			new Thread(bitboxQuote).start();
 		}
+
+		{
+			BitboxQuote bitboxQuote = new BitboxQuote("BTCUSDT");
+			new Thread(bitboxQuote).start();
+		}
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 }
