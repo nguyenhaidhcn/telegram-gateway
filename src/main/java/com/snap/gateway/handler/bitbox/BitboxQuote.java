@@ -306,6 +306,11 @@ public class BitboxQuote implements Runnable{
         MsgRequest msgRequest = new MsgRequest(0, "","", "",0,orderRequest, null, null);
 
         //get position
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         this.getPosition(msgRequest, bitbox.getTradeService());
 
         OpenOrders openOrders = msgRequest.getOpenOrders();
@@ -342,26 +347,30 @@ public class BitboxQuote implements Runnable{
     public void SycBidAsk(TradeService tradeService,
                           List<Quote> quotes,
                           Order.OrderType orderType,
-                          List<LimitOrder> limitOrders,
+                          List<LimitOrder> limitOrdersInput,
                           OrderRequest orderRequest,
                           Integer digit){
+        List<LimitOrder> limitOrders = new ArrayList<>();
         //filter order type
-        Iterator iteratorOrder = limitOrders.iterator();
-        while (iteratorOrder.hasNext())
+//        Iterator iteratorOrder = limitOrders.iterator();
+        for (LimitOrder limitOrder:limitOrdersInput)
         {
-            LimitOrder limitOrder = (LimitOrder)iteratorOrder.next();
-            if(limitOrder.getType() != orderType)
+            if(limitOrder.getType() == orderType)
 //				limitOrders.remove(limitOrder);
-                iteratorOrder.remove();
+                limitOrders.add(limitOrder);
         }
 
         //compare side bid ask.
-        if(quotes.size() != limitOrders.size())
+        if(quotes.size() > limitOrders.size())
         {
-            log.error("Diffirent quote size: " + quotes.size() + "limit size:" + limitOrders.size());
+            log.error("quotesize_bigger: " + quotes.size() + "limit size:" + limitOrders.size());
             //do cancel all, reopen all
 //            if(quotes.size() == 0)
 //                return;
+        }
+        else if (quotes.size() < limitOrders.size())
+        {
+            log.info("quotesize_small: " + quotes.size() + "limit size:" + limitOrders.size());
         }
 
         //make compare. remove quote, limit order equal
@@ -489,7 +498,7 @@ public class BitboxQuote implements Runnable{
                 count ++;
                 log.info(quoteRequest.symbol +":" + count);
                 this.quoteProcess_1(quoteRequest);
-                Thread.sleep(100);
+                Thread.sleep(2000);
             }
             catch (InterruptedException e)
             {
