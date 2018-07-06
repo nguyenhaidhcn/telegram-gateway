@@ -327,7 +327,7 @@ public class BitboxQuote implements Runnable{
 
 
         //syc ask
-        quotes = new ArrayList<>(quoteRequest.bids) ;
+        quotes = new ArrayList<>(quoteRequest.asks) ;
         limitOrders = limitOrders = new ArrayList<>(openOrders.getOpenOrders());
         SycBidAsk(bitbox.getTradeService()
                 , quotes ,
@@ -489,7 +489,7 @@ public class BitboxQuote implements Runnable{
                 count ++;
                 log.info(quoteRequest.symbol +":" + count);
                 this.quoteProcess_1(quoteRequest);
-                Thread.sleep(50);
+                Thread.sleep(100);
             }
             catch (InterruptedException e)
             {
