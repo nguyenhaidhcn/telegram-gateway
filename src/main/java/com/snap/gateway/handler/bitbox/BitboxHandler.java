@@ -113,8 +113,8 @@ public class BitboxHandler implements GatewayHandler {
 	{
 		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey("4ib5UQizAobI06yu");
-		exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
+		exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+		exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
 		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 		try
@@ -250,8 +250,8 @@ public class BitboxHandler implements GatewayHandler {
 		try {
 			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 			exSpec.setUserName("34387");
-			exSpec.setApiKey("4ib5UQizAobI06yu");
-			exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
+			exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+			exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
 			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 			DefaultOpenOrdersParamCurrencyPair orderParams =
@@ -275,8 +275,8 @@ public class BitboxHandler implements GatewayHandler {
 		try {
 			ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 			exSpec.setUserName("34387");
-			exSpec.setApiKey("4ib5UQizAobI06yu");
-			exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
+			exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+			exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
 			Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 			TradeHistoryParamsAll tradeHistoryParamsAll = new TradeHistoryParamsAll();
@@ -355,8 +355,8 @@ public class BitboxHandler implements GatewayHandler {
 
 		ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
 		exSpec.setUserName("34387");
-		exSpec.setApiKey("4ib5UQizAobI06yu");
-		exSpec.setSecretKey("6YVsC9VuYsFpQeaTrRGAz2cTilGaxWKg");
+		exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+		exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
 		Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 
