@@ -62,7 +62,7 @@ public class ThreadPlaceOrder  implements  Runnable{
 
             Date star_date = new Date();
             String uuid = tradeService.placeLimitOrder(limitOrder);
-            System.out.println("Order successfully placed. ID=" + uuid);
+            log.info("Order successfully placed. ID=" + uuid);
             orderRequest.setOrderID(uuid);
             Date finish_date = new Date();
             log.info("Time to place: "+uuid +":" + (finish_date.getTime() - star_date.getTime()));
@@ -84,6 +84,7 @@ public class ThreadPlaceOrder  implements  Runnable{
         else if(orderCancel == null)
         {
             //open only
+            log.info("open remain order");
             this.open();
 
         }
