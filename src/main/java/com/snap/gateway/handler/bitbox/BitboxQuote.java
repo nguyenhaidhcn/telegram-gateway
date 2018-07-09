@@ -144,9 +144,10 @@ public class BitboxQuote implements Runnable{
             DefaultOpenOrdersParamCurrencyPair orderParams =
                     (DefaultOpenOrdersParamCurrencyPair) tradeService.createOpenOrdersParams();
             orderParams.setCurrencyPair(request.getOrderRequest().getPair());
-            System.out.println(tradeService.getOpenOrders(orderParams));
+//            System.out.println(tradeService.getOpenOrders(orderParams));
 
             request.setOpenOrders(tradeService.getOpenOrders(orderParams));
+
         }
         catch (Exception ex)
         {
@@ -318,6 +319,7 @@ public class BitboxQuote implements Runnable{
         if(openOrders.getOpenOrders() == null)
         {
             openOrders = new OpenOrders(new ArrayList<>(), new ArrayList<>());
+            log.info("openOrders 0");
         }
 
         //syc bids
