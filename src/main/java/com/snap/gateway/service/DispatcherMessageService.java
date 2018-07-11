@@ -92,6 +92,9 @@ public class DispatcherMessageService implements Runnable{
 			{
 				msgRequest.digit = 2;
 			}
+			else if(msgRequest.baseSymbol.compareTo("XRP") == 0){
+				msgRequest.digit = 8;
+			}
 			else {
 				msgRequest.digit = 6;
 			}

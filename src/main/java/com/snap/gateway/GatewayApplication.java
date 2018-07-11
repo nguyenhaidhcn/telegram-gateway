@@ -27,6 +27,11 @@ public class GatewayApplication {
 			new Thread(bitboxQuote).start();
 		}
 
+		{
+			BitboxQuote bitboxQuote = new BitboxQuote("XRPETH");
+			new Thread(bitboxQuote).start();
+		}
+
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 }
