@@ -33,7 +33,7 @@ import java.util.*;
 
 public class BitboxQuote implements Runnable{
 
-    private static final Logger log = LoggerFactory.getLogger(BitboxHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(BitboxQuote.class);
     private static long lastHitory = 0;
     private final String symbol;
     private final Integer digit;
@@ -293,57 +293,64 @@ public class BitboxQuote implements Runnable{
     //solution one. cancel one place one.
     public void quoteProcess_1(QuoteRequest quoteRequest)
     {
-        log.info("quoteProcess solution 1. cancel one then place one");
-        ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
-        exSpec.setUserName("34387");
-        exSpec.setApiKey("2PuZTxAeBVbXhyyt");
-        exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
-        Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
-
-
-        //get open order
-        OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setBaseSymbol(quoteRequest.baseSymbol);
-        orderRequest.setCounterSymbol(quoteRequest.counterSymbol);
-        orderRequest.setPair(new CurrencyPair(quoteRequest.baseSymbol, quoteRequest.counterSymbol));
-        MsgRequest msgRequest = new MsgRequest(0, "","", "",0,orderRequest, null, null);
-
-        //get position
         try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info("quoteProcess solution 1. cancel one then place one");
+            ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
+            exSpec.setUserName("34387");
+            exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+            exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
+            Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
+
+
+            //get open order
+            OrderRequest orderRequest = new OrderRequest();
+            orderRequest.setBaseSymbol(quoteRequest.baseSymbol);
+            orderRequest.setCounterSymbol(quoteRequest.counterSymbol);
+            orderRequest.setPair(new CurrencyPair(quoteRequest.baseSymbol, quoteRequest.counterSymbol));
+            MsgRequest msgRequest = new MsgRequest(0, "", "", "", 0, orderRequest, null, null);
+
+            //get position
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.getPosition(msgRequest, bitbox.getTradeService());
+
+            OpenOrders openOrders = msgRequest.getOpenOrders();
+
+            if (openOrders.getOpenOrders() == null) {
+                openOrders = new OpenOrders(new ArrayList<>(), new ArrayList<>());
+                log.info("openOrders 0");
+            }
+
+            //syc bids
+            List<Quote> quotes = new ArrayList<>(quoteRequest.bids);
+            List<LimitOrder> limitOrders = new ArrayList<>(openOrders.getOpenOrders());
+            SycBidAsk(bitbox.getTradeService()
+                    , quotes,
+                    Order.OrderType.BID,
+                    limitOrders,
+                    orderRequest,
+                    this.digit);
+
+
+            //syc ask
+            quotes = new ArrayList<>(quoteRequest.asks);
+            limitOrders = limitOrders = new ArrayList<>(openOrders.getOpenOrders());
+            SycBidAsk(bitbox.getTradeService()
+                    , quotes,
+                    Order.OrderType.ASK,
+                    limitOrders,
+                    orderRequest,
+                    this.digit);
+
         }
-        this.getPosition(msgRequest, bitbox.getTradeService());
-
-        OpenOrders openOrders = msgRequest.getOpenOrders();
-
-        if(openOrders.getOpenOrders() == null)
+        catch (Exception e)
         {
-            openOrders = new OpenOrders(new ArrayList<>(), new ArrayList<>());
-            log.info("openOrders 0");
+            e.printStackTrace();
+            log.error(String.valueOf(e.getStackTrace()));
         }
-
-        //syc bids
-        List<Quote> quotes = new ArrayList<>(quoteRequest.bids) ;
-        List<LimitOrder> limitOrders = new ArrayList<>(openOrders.getOpenOrders());
-        SycBidAsk(bitbox.getTradeService()
-                , quotes ,
-                Order.OrderType.BID,
-                limitOrders,
-                orderRequest,
-                this.digit );
-
-
-        //syc ask
-        quotes = new ArrayList<>(quoteRequest.asks) ;
-        limitOrders = limitOrders = new ArrayList<>(openOrders.getOpenOrders());
-        SycBidAsk(bitbox.getTradeService()
-                , quotes ,
-                Order.OrderType.ASK,
-                limitOrders,
-                orderRequest,
-                this.digit );
 
 
     }
