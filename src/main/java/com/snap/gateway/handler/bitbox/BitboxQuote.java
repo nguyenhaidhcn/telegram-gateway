@@ -484,6 +484,7 @@ public class BitboxQuote implements Runnable{
         {
             try
             {
+                log.info("try get quote:" + symbol);
                 Map<String, QuoteRequest> quoteRequestMap = ShareObjectQuote.getCopy();
                 QuoteRequest quoteRequest = quoteRequestMap.get(symbol);
                 if (quoteRequest == null) {
