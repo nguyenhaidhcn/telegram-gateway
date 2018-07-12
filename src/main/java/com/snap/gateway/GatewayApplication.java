@@ -1,10 +1,13 @@
 package com.snap.gateway;
 
 import com.snap.gateway.handler.bitbox.BitboxQuote;
+import com.snap.gateway.handler.bitbox.PriceDigit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Map;
 
 @SpringBootApplication
 public class GatewayApplication {
@@ -12,25 +15,23 @@ public class GatewayApplication {
 
 	public static void main(String[] args) {
 		//todo loop config pair
-		{
-			BitboxQuote bitboxQuote = new BitboxQuote("ETHBTC");
-			new Thread(bitboxQuote).start();
-		}
 
-		{
-			BitboxQuote bitboxQuote = new BitboxQuote("BTCUSDT");
-			new Thread(bitboxQuote).start();
-		}
+		PriceDigit.getInstance().LoadCsv();
 
-		{
-			BitboxQuote bitboxQuote = new BitboxQuote("XRPBTC");
-			new Thread(bitboxQuote).start();
-		}
+		Map<String, Integer> mapPair = PriceDigit.getInstance().getDigits();
+		for (String key :mapPair.keySet()
+			 ) {
 
-		{
-			BitboxQuote bitboxQuote = new BitboxQuote("XRPETH");
-			new Thread(bitboxQuote).start();
+			{
+				BitboxQuote bitboxQuote = new BitboxQuote(key, mapPair.get(key));
+				new Thread(bitboxQuote).start();
+			}
+
 		}
+		
+
+
+
 
 		SpringApplication.run(GatewayApplication.class, args);
 	}

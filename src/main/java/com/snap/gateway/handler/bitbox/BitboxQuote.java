@@ -36,9 +36,11 @@ public class BitboxQuote implements Runnable{
     private static final Logger log = LoggerFactory.getLogger(BitboxHandler.class);
     private static long lastHitory = 0;
     private final String symbol;
+    private final Integer digit;
     private int count = 0;
     private long lastID = 0;
-    public BitboxQuote(String sym) {
+    public BitboxQuote(String sym, Integer digit) {
+        this.digit = digit;
         this.symbol = sym;
     }
 
@@ -330,7 +332,7 @@ public class BitboxQuote implements Runnable{
                 Order.OrderType.BID,
                 limitOrders,
                 orderRequest,
-                quoteRequest.digit );
+                this.digit );
 
 
         //syc ask
@@ -341,7 +343,7 @@ public class BitboxQuote implements Runnable{
                 Order.OrderType.ASK,
                 limitOrders,
                 orderRequest,
-                quoteRequest.digit );
+                this.digit );
 
 
     }
