@@ -50,8 +50,6 @@ public class BitboxQuote implements Runnable{
     @Value("${OrderHedge.Topic}")
     private String OrderHedgeTopic;
 
-    @Autowired
-    private Sender sender;
 
 
 
@@ -562,8 +560,9 @@ public class BitboxQuote implements Runnable{
                 MsgRequest msgRequest = new MsgRequest(0, "","","", 1,orderRequest,null, null);
                 Gson gson = new Gson();
 
-                log.info("Send hedge order to:"+ OrderHedgeTopic );
-                sender.send(OrderHedgeTopic, gson.toJson(msgRequest));
+                log.info("Send hedge order to:"+ "OrderHedge.Topic" );
+
+                ShareObjectQuote.sender.send("OrderHedge.Topic", gson.toJson(msgRequest));
             }
 
 

@@ -20,6 +20,9 @@ public class Receiver {
 	
 	@Autowired
 	private DispatcherMessageService dispatcher;
+
+	@Autowired
+	Sender sender;
 	
 	@JmsListener(destination = "${OrderRequest.Topic}", containerFactory = "connectionFactory")
     public void receiveQueue(String request) {
@@ -82,6 +85,7 @@ public class Receiver {
 
 		msgRequest.id = new Date().getTime();
 		Map<String, QuoteRequest>  stringQuoteRequestMap = ShareObjectQuote.getMap();
+		ShareObjectQuote.sender = sender;
 		stringQuoteRequestMap.put(msgRequest.symbol, msgRequest);
 
     }

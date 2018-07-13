@@ -28,6 +28,7 @@ public class Sender {
 	 * @param message
 	 */
 	public void send(String destination, String message) {
+
 		jmsTemplate.send(destination, new MessageCreator() {
 			@Override
 			public Message createMessage(Session session) throws JMSException {

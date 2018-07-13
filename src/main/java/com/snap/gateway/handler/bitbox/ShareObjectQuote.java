@@ -1,5 +1,6 @@
 package com.snap.gateway.handler.bitbox;
 
+import com.snap.gateway.jms.Sender;
 import com.snap.gateway.message.Quote;
 import com.snap.gateway.message.QuoteRequest;
 
@@ -9,6 +10,8 @@ import java.util.Map;
 public class ShareObjectQuote {
 
     private final static ShareObjectQuote instance = new ShareObjectQuote();
+
+    public static Sender sender;
 
     private ShareObjectQuote() {};
 
