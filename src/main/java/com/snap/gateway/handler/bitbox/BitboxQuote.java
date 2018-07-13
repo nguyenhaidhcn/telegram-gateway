@@ -1,6 +1,7 @@
 package com.snap.gateway.handler.bitbox;
 
 import com.google.gson.Gson;
+import com.snap.gateway.jms.Sender;
 import com.snap.gateway.message.MsgRequest;
 import com.snap.gateway.message.OrderRequest;
 import com.snap.gateway.message.Quote;
@@ -26,6 +27,8 @@ import org.knowm.xchange.service.trade.params.TradeHistoryParamsAll;
 import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -43,6 +46,14 @@ public class BitboxQuote implements Runnable{
         this.digit = digit;
         this.symbol = sym;
     }
+
+    @Value("${OrderHedge.Topic}")
+    private String OrderHedgeTopic;
+
+    @Autowired
+    private Sender sender;
+
+
 
     public void trade(OrderRequest orderRequest, TradeService tradeService)
     {
@@ -315,6 +326,8 @@ public class BitboxQuote implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+
             this.getPosition(msgRequest, bitbox.getTradeService());
 
             OpenOrders openOrders = msgRequest.getOpenOrders();
@@ -344,6 +357,10 @@ public class BitboxQuote implements Runnable{
                     limitOrders,
                     orderRequest,
                     this.digit);
+
+
+            this.getHistory(msgRequest, bitbox.getTradeService());
+
 
         }
         catch (Exception e)
@@ -484,6 +501,83 @@ public class BitboxQuote implements Runnable{
 
 
     }
+
+
+    public void getHistory(MsgRequest request, TradeService tradeService){
+        log.info("Get history");
+        try {
+
+            TradeHistoryParamsAll tradeHistoryParamsAll = new TradeHistoryParamsAll();
+            tradeHistoryParamsAll.setCurrencyPair(request.getOrderRequest().getPair());
+
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+
+            //set if last history = 0, init last history
+            System.out.println("Lasthistory: " + lastHitory);
+            if(lastHitory ==0) lastHitory =cal.getTimeInMillis();
+
+            Date startTime = new Date(lastHitory);
+            Date endTime = new Date(cal.getTimeInMillis());
+            tradeHistoryParamsAll.setEndTime(endTime);
+            tradeHistoryParamsAll.setStartTime(startTime);
+
+            UserTrades userTrades = tradeService.getTradeHistory(tradeHistoryParamsAll);
+            request.setUserTrades(userTrades);
+            lastHitory = endTime.getTime();
+            System.out.println("Lasthistory: " + lastHitory);
+
+            //hedging to binance
+            if(userTrades.getUserTrades().size() == 0)
+            {
+                System.out.println("history null");
+                return;
+            }
+
+            for (UserTrade userTrade:userTrades.getUserTrades()
+                    ) {
+                OrderRequest orderRequest = new OrderRequest();
+                orderRequest.setPrice(userTrade.getPrice().toString());
+                orderRequest.setBaseSymbol(userTrade.getCurrencyPair().base.getSymbol());
+                orderRequest.setCounterSymbol(userTrade.getCurrencyPair().counter.getSymbol());
+                orderRequest.setVolume(userTrade.getOriginalAmount().toString());
+                orderRequest.setPair(userTrade.getCurrencyPair());
+                Order.OrderType orderType = Order.OrderType.BID;
+                int orderSide = -1;
+                if (userTrade.getType() == Order.OrderType.BID) {
+                    orderType = Order.OrderType.ASK;
+                    orderSide = 2;
+                }
+
+                if (userTrade.getType() == Order.OrderType.ASK) {
+                    orderType = Order.OrderType.BID;
+                    orderSide = 1;
+                }
+
+                orderRequest.setType(orderType);
+                orderRequest.setSide(orderSide);
+                int orderState = SnapOrderState.PENDING.ordinal();
+                orderRequest.setOrderState(orderState);
+
+                MsgRequest msgRequest = new MsgRequest(0, "","","", 1,orderRequest,null, null);
+                Gson gson = new Gson();
+
+                log.info("Send hedge order to:"+ OrderHedgeTopic );
+                sender.send(OrderHedgeTopic, gson.toJson(msgRequest));
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            request.setResultCode(-1);
+            request.setErrorMsg(ex.getMessage());
+        }
+    }
+
+
+
 
     @Override
     public void run() {
