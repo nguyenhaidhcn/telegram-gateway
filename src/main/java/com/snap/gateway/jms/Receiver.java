@@ -43,8 +43,31 @@ public class Receiver {
 		//init base.counter symbol
 		String symbol = msgRequest.symbol;
 		symbol = symbol.toUpperCase();
-		msgRequest.baseSymbol = symbol.substring(0,3);
-		msgRequest.counterSymbol = symbol.substring(3,symbol.length());
+
+		boolean hasUSDT = false;
+		hasUSDT = symbol.contains("USDT");
+
+		if (symbol.length() < 4)
+        {
+            log.error("Bad symbol" + symbol);
+            return;
+        }
+
+		if(hasUSDT)
+        {
+            msgRequest.baseSymbol = symbol.substring(0,symbol.length() -4);
+		    msgRequest.counterSymbol = symbol.substring(symbol.length() -4,symbol.length());
+        }
+        else
+        {
+            msgRequest.baseSymbol = symbol.substring(0,symbol.length() -3);
+            msgRequest.counterSymbol = symbol.substring(symbol.length() -3,symbol.length());
+        }
+
+//		msgRequest.baseSymbol = symbol.substring(0,3);
+//		msgRequest.counterSymbol = symbol.substring(3,symbol.length());
+
+
 //
 //		if (msgRequest.counterSymbol.compareTo("USDT") == 0)
 //		{
