@@ -37,7 +37,7 @@ import java.util.*;
 public class BitboxQuote implements Runnable{
 
     private static final Logger log = LoggerFactory.getLogger(BitboxQuote.class);
-    private static long lastHitory = 0;
+    private long lastHitory = 0;
     private final String symbol;
     private final Integer digit;
     private int count = 0;
