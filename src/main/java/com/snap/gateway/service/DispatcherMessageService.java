@@ -67,9 +67,9 @@ public class DispatcherMessageService implements Runnable{
 			msgRequest.setResultCode(msgRequest.getOrderRequest().getResultCode());
 			msgRequest.setErrorMsg(msgRequest.getOrderRequest().getErrorMsg());
 
-			sender.send(gson.toJson(msgRequest));
+//			sender.send(gson.toJson(msgRequest));
 		} catch (Exception ex) {
-			log.info("Invalid request format {}", request);
+//			log.info("Invalid request format {}", request);
 			log.info("Exception Info: ", ex);
 			
 		}
