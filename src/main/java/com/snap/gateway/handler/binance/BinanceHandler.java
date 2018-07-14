@@ -137,13 +137,6 @@ public class BinanceHandler implements GatewayHandler {
 
 	public void OpenLimit(TradeService tradeService, OrderRequest orderRequest) throws IOException {
 
-		ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
-		exSpec.setUserName("34387");
-		exSpec.setApiKey("5b120d483232925061499e66");
-		exSpec.setSecretKey("7f6333b5-da43-4a08-ae77-7f580bb61981");
-		Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
-
-
 		LimitOrder limitOrder =
 				new LimitOrder.Builder(orderRequest.getType(), orderRequest.getPair())
 						.limitPrice(new BigDecimal(orderRequest.getPrice()))
@@ -152,15 +145,19 @@ public class BinanceHandler implements GatewayHandler {
 
 		try {
 			String uuid = tradeService.placeLimitOrder(limitOrder);
-			System.out.println("Order successfully placed. ID=" + uuid);
+			log.info("Order successfully placed. ID=" + uuid);
 			orderRequest.setOrderID(uuid);
-			Thread.sleep(7000); // wait for order to propagate
+			Thread.sleep(2000); // wait for order to propagate
 
 			System.out.println();
 			DefaultOpenOrdersParamCurrencyPair orderParams =
 					(DefaultOpenOrdersParamCurrencyPair) tradeService.createOpenOrdersParams();
 			orderParams.setCurrencyPair(orderRequest.getPair());
-			System.out.println(tradeService.getOpenOrders(orderParams));
+
+			//check open order
+			OpenOrders openOrders = tradeService.getOpenOrders(orderParams);
+			log.info("Open orders:"+ String.valueOf(openOrders.getOpenOrders()));
+			System.out.println("Open orders:" + openOrders);
 
 		} catch (Exception e) {
 			e.printStackTrace();
