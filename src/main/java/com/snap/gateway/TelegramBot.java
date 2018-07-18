@@ -11,10 +11,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot  {
-    @Value("${bot.token}")
-    private String token;
-    @Value("${chat.id}")
-    public long chat_id;
+
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -23,7 +20,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
         if (update.hasMessage() && update.getMessage().hasText()) {
             // Set variables
             String message_text = update.getMessage().getText();
-            chat_id = update.getMessage().getChatId();
+            long chat_id = update.getMessage().getChatId();
 
             SendMessage message = new SendMessage() // Create a message object object
                     .setChatId(chat_id)
@@ -42,7 +39,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
 
 
         SendMessage message = new SendMessage() // Create a message object object
-                .setChatId(chat_id)
+                .setChatId(ShareObjectQuote.chat_id)
                 .setText(msg + "test");
         try {
             execute(message); // Sending our message object to user
@@ -61,7 +58,9 @@ public class TelegramBot extends TelegramLongPollingBot  {
     @Override
     public String getBotToken() {
         // Return bot token from BotFather
+//        return ShareObjectQuote.token;
         return "525968331:AAHjiranH89hLS60L02FMW7wOaWB0gVjiIw";
+
     }
 
 

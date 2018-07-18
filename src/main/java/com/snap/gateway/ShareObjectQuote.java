@@ -1,6 +1,8 @@
 package com.snap.gateway;
 
 import com.snap.gateway.message.QuoteRequest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -8,6 +10,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class ShareObjectQuote {
 
     private final static ShareObjectQuote instance = new ShareObjectQuote();
@@ -32,5 +35,15 @@ public class ShareObjectQuote {
     }
 
     public static TelegramBot telegramBot;
+
+//    public static String token;
+//
+//    public static long chat_id;
+
+    @Value("${bot.token}")
+    public static String token;
+    @Value("${chat.id}")
+    public static long chat_id;
+
 
 }
