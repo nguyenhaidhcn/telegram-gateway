@@ -6,6 +6,7 @@ import com.snap.gateway.message.QuoteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,14 @@ public class Receiver {
 
 	@Autowired
 	Sender sender;
+
+
+	@Value("${api.key}")
+	private String ApiKey;
+
+	@Value("${secret.key}")
+	private String SecretKey;
+
 	
 	@JmsListener(destination = "${OrderRequest.Topic}", containerFactory = "connectionFactory")
     public void receiveQueue(String request) {
@@ -86,6 +95,8 @@ public class Receiver {
 		msgRequest.id = new Date().getTime();
 		Map<String, QuoteRequest>  stringQuoteRequestMap = ShareObjectQuote.getMap();
 		ShareObjectQuote.sender = sender;
+		ShareObjectQuote.ApiKey = ApiKey;
+		ShareObjectQuote.SecretKey = SecretKey;
 		stringQuoteRequestMap.put(msgRequest.symbol, msgRequest);
 
     }

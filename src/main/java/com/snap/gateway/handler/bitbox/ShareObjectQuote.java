@@ -3,6 +3,7 @@ package com.snap.gateway.handler.bitbox;
 import com.snap.gateway.jms.Sender;
 import com.snap.gateway.message.Quote;
 import com.snap.gateway.message.QuoteRequest;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,10 @@ public class ShareObjectQuote {
     private final static ShareObjectQuote instance = new ShareObjectQuote();
 
     public static Sender sender;
+
+    public static String ApiKey;
+
+    public static String SecretKey;
 
     private ShareObjectQuote() {};
 

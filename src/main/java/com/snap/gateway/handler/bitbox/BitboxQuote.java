@@ -94,11 +94,11 @@ public class BitboxQuote implements Runnable{
 
     public void OpenLimit(TradeService tradeService, OrderRequest orderRequest) throws IOException {
 
-        ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
-        exSpec.setUserName("34387");
-        exSpec.setApiKey("2PuZTxAeBVbXhyyt");
-        exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
-        Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
+//        ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
+//        exSpec.setUserName("34387");
+//        exSpec.setApiKey("2PuZTxAeBVbXhyyt");
+//        exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
+//        Exchange kucoin = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 
         LimitOrder limitOrder =
@@ -178,8 +178,8 @@ public class BitboxQuote implements Runnable{
 
             ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
             exSpec.setUserName("34387");
-            exSpec.setApiKey("2PuZTxAeBVbXhyyt");
-            exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
+            exSpec.setApiKey(ShareObjectQuote.ApiKey);
+            exSpec.setSecretKey(ShareObjectQuote.SecretKey);
             Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 
@@ -306,8 +306,8 @@ public class BitboxQuote implements Runnable{
             log.info("quoteProcess solution 1. cancel one then place one");
             ExchangeSpecification exSpec = new BitboxExchange().getDefaultExchangeSpecification();
             exSpec.setUserName("34387");
-            exSpec.setApiKey("2PuZTxAeBVbXhyyt");
-            exSpec.setSecretKey("S46DRo1z6IMPmSfCrNrbef5MpSL7RmYd");
+            exSpec.setApiKey(ShareObjectQuote.ApiKey);
+            exSpec.setSecretKey(ShareObjectQuote.SecretKey);
             Exchange bitbox = ExchangeFactory.INSTANCE.createExchange(exSpec);
 
 
