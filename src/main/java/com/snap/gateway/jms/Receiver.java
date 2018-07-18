@@ -18,19 +18,11 @@ public class Receiver {
 	private static final Logger log = LoggerFactory.getLogger(Receiver.class);
 
 
-
-
-	@Value("${api.key}")
-	private String ApiKey;
-
-	@Value("${secret.key}")
-	private String SecretKey;
-
 	
-	@JmsListener(destination = "${Telegram.Topic}", containerFactory = "connectionFactory")
+	@JmsListener(destination = "${Telegram.Queue}", containerFactory = "connectionFactory")
     public void receiveQueue(String request) {
-
-//		dispatcher.processRequest(request);
+		log.info("Telegram.Queue:"+ request );
+		ShareObjectQuote.telegramBot.send(request);
     }
 
 

@@ -1,5 +1,7 @@
 package com.snap.gateway;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -7,9 +9,12 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+@Component
 public class TelegramBot extends TelegramLongPollingBot  {
-
-    public long chat_id = 0;
+    @Value("${bot.token}")
+    private String token;
+    @Value("${chat.id}")
+    public long chat_id;
 
     @Override
     public void onUpdateReceived(Update update) {
