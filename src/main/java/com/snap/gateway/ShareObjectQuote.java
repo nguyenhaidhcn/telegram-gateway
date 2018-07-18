@@ -1,9 +1,9 @@
-package com.snap.gateway.handler.bitbox;
+package com.snap.gateway;
 
-import com.snap.gateway.jms.Sender;
-import com.snap.gateway.message.Quote;
 import com.snap.gateway.message.QuoteRequest;
-import org.springframework.beans.factory.annotation.Value;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.TelegramBotsApi;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +12,6 @@ public class ShareObjectQuote {
 
     private final static ShareObjectQuote instance = new ShareObjectQuote();
 
-    public static Sender sender;
-
-    public static String ApiKey;
-
-    public static String SecretKey;
 
     private ShareObjectQuote() {};
 
@@ -35,5 +30,7 @@ public class ShareObjectQuote {
     public static ShareObjectQuote getInstance() {
         return instance;
     }
+
+    public static TelegramBot telegramBot;
 
 }
