@@ -18,9 +18,14 @@ public class Receiver {
 	private static final Logger log = LoggerFactory.getLogger(Receiver.class);
 
 
-	
+    @JmsListener(destination = "${OrderResponse.Topic}", containerFactory = "connectionFactory")
+    public void receiveOrders(String request) {
+        log.info("OrderResponse.Topic:"+ request );
+//		ShareObjectQuote.telegramBot.send(request);
+    }
+
 	@JmsListener(destination = "${Telegram.Queue}", containerFactory = "connectionFactory")
-    public void receiveQueue(String request) {
+    public void receiveQueueTele(String request) {
 		log.info("Telegram.Queue:"+ request );
 		ShareObjectQuote.telegramBot.send(request);
     }

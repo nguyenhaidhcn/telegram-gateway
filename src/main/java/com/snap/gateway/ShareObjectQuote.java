@@ -40,10 +40,10 @@ public class ShareObjectQuote {
 //
 //    public static long chat_id;
 
-    @Value("${bot.token}")
+//    @Value("${bot.token}")
     public static String token;
-    @Value("${chat.id}")
-    public static long chat_id;
+//    @Value("${chat.id}")
+    public static long chat_id =-266020437;
 
 
 }
