@@ -21,7 +21,7 @@ public class Receiver {
     @JmsListener(destination = "${OrderResponse.Topic}", containerFactory = "connectionFactory")
     public void receiveOrders(String request) {
         log.info("OrderResponse.Topic:"+ request );
-//		ShareObjectQuote.telegramBot.send(request);
+		ShareObjectQuote.telegramBot.send(request);
     }
 
 	@JmsListener(destination = "${Telegram.Queue}", containerFactory = "connectionFactory")

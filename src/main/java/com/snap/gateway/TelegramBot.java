@@ -19,6 +19,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
     @Override
     public void onUpdateReceived(Update update) {
 
+        long chat_id = update.getMessage().getChatId();
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
             // Set variables
@@ -49,7 +50,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
             {
                 return;
             }
-            long chat_id = update.getMessage().getChatId();
+//            long chat_id = update.getMessage().getChatId();
 
             SendMessage message = new SendMessage() // Create a message object object
                     .setChatId(chat_id)
