@@ -21,6 +21,9 @@ public class Receiver {
     @JmsListener(destination = "${OrderResponse.Topic}", containerFactory = "connectionFactory")
     public void receiveOrders(String request) {
 
+    	if(request.contains("The signature is not valid"))
+    		return;
+
     	Date date = new Date();
     	long time = date.getTime();
     	Long lasttime = ShareObjectQuote.notifyMsg.get(request);
@@ -38,6 +41,10 @@ public class Receiver {
 				log.info("OrderResponse.Topic:"+ request );
 				ShareObjectQuote.telegramBot.send(request);
 				ShareObjectQuote.notifyMsg.put(request, time);
+			}
+			else
+			{
+				log.info("Ignore:"+ request );
 			}
 		}
 
