@@ -10,6 +10,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.util.Date;
 import java.util.Map;
 
 @Component
@@ -23,53 +24,102 @@ public class TelegramBot extends TelegramLongPollingBot  {
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
             // Set variables
-            String message_text = update.getMessage().getText();
-            String stops = "Stop: ";
 
-            String running = "Running: ";
+            String message_text = update.getMessage().getText();
             if(message_text.equals("/quotes"))
             {
-                Map<String, QuoteRequest> stringQuoteRequestMap= ShareObjectQuote.getCopy();
-
-                for (Map.Entry<String, QuoteRequest> entry : stringQuoteRequestMap.entrySet()) {
-
-                    System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-                    if(entry.getValue().asks.size() == 0 && entry.getValue().bids.size() == 0)
-                    {
-
-                        stops += entry.getKey() + ", ";
-                    }
-                    {
-                        running += entry.getKey() + ", ";
-                    }
-                }
-
-
+                sendStopStart(chat_id);
             }
-            else
+
+            if(message_text.equals("/errors"))
             {
-                return;
+                sendCurrentError(chat_id);
             }
-//            long chat_id = update.getMessage().getChatId();
 
-            SendMessage message = new SendMessage() // Create a message object object
-                    .setChatId(chat_id)
-                    .setText(running);
-
-            SendMessage messageStop = new SendMessage() // Create a message object object
-                    .setChatId(chat_id)
-                    .setText(stops);
-
-            try {
-                execute(message); // Sending our message object to user
-                execute(messageStop); // Sending our message object to user
-
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+
+
+    //query stop/start
+
+    private void sendStopStart(long chat_id)
+    {
+        String stops = "Stop: ";
+
+        String running = "Running: ";
+
+        {
+            Map<String, QuoteRequest> stringQuoteRequestMap= ShareObjectQuote.getCopy();
+
+            for (Map.Entry<String, QuoteRequest> entry : stringQuoteRequestMap.entrySet()) {
+
+                System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+                if(entry.getValue().asks.size() == 0 && entry.getValue().bids.size() == 0)
+                {
+
+                    stops += entry.getKey() + ", ";
+                }
+                {
+                    running += entry.getKey() + ", ";
+                }
+            }
+
+
+        }
+
+        SendMessage message = new SendMessage() // Create a message object object
+                .setChatId(chat_id)
+                .setText(running);
+
+        SendMessage messageStop = new SendMessage() // Create a message object object
+                .setChatId(chat_id)
+                .setText(stops);
+
+        try {
+            execute(message); // Sending our message object to user
+            execute(messageStop); // Sending our message object to user
+
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //query current error
+    private void sendCurrentError(long chat_id)
+    {
+
+        String errors = "Current errors: \n";
+
+        {
+
+            Date date = new Date();
+            long time = date.getTime();
+            for (Map.Entry<String, Long> entry : ShareObjectQuote.notifyMsg.entrySet()) {
+
+//                System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+                if(time - entry.getValue() <600000)
+                {
+
+                    errors += entry.getKey();
+                    errors +="\n";
+                }
+
+            }
+
+
+        }
+
+        SendMessage message = new SendMessage() // Create a message object object
+                .setChatId(chat_id)
+                .setText(errors);
+
+        try {
+            execute(message); // Sending our message object to user
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void send(String msg)
     {

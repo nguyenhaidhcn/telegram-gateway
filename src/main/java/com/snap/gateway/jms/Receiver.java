@@ -20,8 +20,27 @@ public class Receiver {
 
     @JmsListener(destination = "${OrderResponse.Topic}", containerFactory = "connectionFactory")
     public void receiveOrders(String request) {
-        log.info("OrderResponse.Topic:"+ request );
-		ShareObjectQuote.telegramBot.send(request);
+
+    	Date date = new Date();
+    	long time = date.getTime();
+    	Long lasttime = ShareObjectQuote.notifyMsg.get(request);
+    	if(lasttime == null)
+		{
+			ShareObjectQuote.notifyMsg.put(request, time);
+			log.info("OrderResponse.Topic:"+ request );
+			ShareObjectQuote.telegramBot.send(request);
+		}
+		else
+		{
+			if((time - lasttime) >  600000)
+			{
+				//send
+				log.info("OrderResponse.Topic:"+ request );
+				ShareObjectQuote.telegramBot.send(request);
+				ShareObjectQuote.notifyMsg.put(request, time);
+			}
+		}
+
     }
 
 	@JmsListener(destination = "${Telegram.Queue}", containerFactory = "connectionFactory")
@@ -36,7 +55,7 @@ public class Receiver {
 
 		Map<String, QuoteRequest>  stringQuoteRequestMap = ShareObjectQuote.getMap();
 //		ShareObjectQuote.telegramBot.send(request);
-		log.info("received -- {}", request);
+//		log.info("received -- {}", request);
 		Gson gson = new Gson();
 
 		QuoteRequest msgRequest = gson.fromJson(request, QuoteRequest.class);

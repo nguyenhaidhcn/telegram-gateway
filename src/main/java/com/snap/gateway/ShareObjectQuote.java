@@ -36,6 +36,8 @@ public class ShareObjectQuote {
 
     public static TelegramBot telegramBot;
 
+
+    public static Map<String, Long> notifyMsg = new HashMap<>();
 //    public static String token;
 //
 //    public static long chat_id;
