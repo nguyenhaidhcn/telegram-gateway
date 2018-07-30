@@ -27,6 +27,9 @@ public class GatewayApplication {
 		ThreadTelegram threadTelegram = new ThreadTelegram();
 		new Thread(threadTelegram).start();
 
+		ThreadCheckQuoteStop threadCheckQuoteStop = new ThreadCheckQuoteStop();
+		new Thread(threadCheckQuoteStop).start();
+
 
 
 		SpringApplication.run(GatewayApplication.class, args);
