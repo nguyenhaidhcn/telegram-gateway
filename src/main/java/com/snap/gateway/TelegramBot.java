@@ -124,9 +124,23 @@ public class TelegramBot extends TelegramLongPollingBot  {
     public void send(String msg)
     {
 
+        long id = 0;
+        //default group LINE monitoring
+        id = ShareObjectQuote.chat_id;
+        //group LINE order Failed
+        if(msg.contains("Hedge"))
+        {
+            id = ShareObjectQuote.chat_id_hedge;
+        }
+
+        if(msg.contains("Balance"))
+        {
+            id = ShareObjectQuote.chat_id_balance;
+        }
+
 
         SendMessage message = new SendMessage() // Create a message object object
-                .setChatId(ShareObjectQuote.chat_id)
+                .setChatId(id)
                 .setText(msg);
         try {
             execute(message); // Sending our message object to user
