@@ -10,8 +10,8 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import java.util.Date;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot  {
@@ -34,6 +34,11 @@ public class TelegramBot extends TelegramLongPollingBot  {
             if(message_text.equals("/errors"))
             {
                 sendCurrentError(chat_id);
+            }
+
+            if(message_text.equals("/balances"))
+            {
+                querryBalance(chat_id);
             }
 
         }
@@ -84,6 +89,76 @@ public class TelegramBot extends TelegramLongPollingBot  {
             e.printStackTrace();
         }
     }
+
+
+
+    //query balance
+    private void querryBalance(long chat_id)
+    {
+        List<String> mailList = new ArrayList<>();
+        mailList.add("celinee2017@gmail.com");
+        mailList.add("wilson@almegafingroup.com");
+        mailList.add("wilsonseah@hotmail.com");
+        mailList.add("merrysilvana@gmail.com");
+        mailList.add("binance_mail");
+
+        BigDecimal total_btc = new BigDecimal(0);
+        BigDecimal total_eth = new BigDecimal(0);
+        for(String mail:mailList)
+        {
+            String msg = "";
+            Object o =  ShareObjectQuote.balanceRepository.sumBalance(mail);
+//            List<Object> list = Arrays.asList(o);
+//            total_btc.add( balanceDB.getEstimate_btc());
+//            total_eth.add(balanceDB.getEstimate_eth());
+            msg = msg + mail+" estimate balance [btc,eth]:[" +o+"]";
+//            msg = msg + mail+" estimate eth:" + balanceDB.getEstimate_eth()+"\n";
+            SendMessage message = new SendMessage() // Create a message object object
+                    .setChatId(chat_id)
+                    .setText(msg);
+
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        String msg = "";
+        Object o =  ShareObjectQuote.balanceRepository.totalBalance();
+//            List<Object> list = Arrays.asList(o);
+//            total_btc.add( balanceDB.getEstimate_btc());
+//            total_eth.add(balanceDB.getEstimate_eth());
+        msg = msg +" total [btc,eth]:[" +o+"]";
+//            msg = msg + mail+" estimate eth:" + balanceDB.getEstimate_eth()+"\n";
+        SendMessage message = new SendMessage() // Create a message object object
+                .setChatId(chat_id)
+                .setText(msg);
+
+        try {
+            execute(message); // Sending our message object to user
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+//        String msg = "";
+//        msg = msg + "total btc:" + total_btc+"\n";
+//        msg = msg + "total eth:" + total_eth+"\n";
+//        SendMessage message = new SendMessage() // Create a message object object
+//                .setChatId(chat_id)
+//                .setText(msg);
+//
+//        try {
+//            execute(message); // Sending our message object to user
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
+
+
+    }
+
+
 
     //query current error
     private void sendCurrentError(long chat_id)

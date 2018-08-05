@@ -1,6 +1,7 @@
 package com.snap.gateway;
 
 import com.snap.gateway.message.QuoteRequest;
+import org.knowm.xchange.bitbox.dto.bitbox.BalanceResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -35,6 +36,8 @@ public class ShareObjectQuote {
     }
 
     public static TelegramBot telegramBot;
+
+    public static BalanceRepository balanceRepository;
 
 
     public static Map<String, Long> notifyMsg = new HashMap<>();
