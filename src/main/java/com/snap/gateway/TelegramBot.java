@@ -208,7 +208,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
             id = ShareObjectQuote.chat_id_hedge;
         }
 
-        if(msg.contains("Balance"))
+        if(msg.contains("Balance") || msg.contains("balance"))
         {
             id = ShareObjectQuote.chat_id_balance;
         }
@@ -222,6 +222,32 @@ public class TelegramBot extends TelegramLongPollingBot  {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+
+        //in case ugrent
+
+        if(msg.contains("Ugrent")
+                || msg.contains("balance")
+                || msg.contains("Balance")
+                || msg.contains("NOT ENOUGH Balance to Order")
+                || msg.contains("Account has insufficient balance")
+                )
+        {
+            id = ShareObjectQuote.chat_id_ugrent;
+            SendMessage message_ugrent = new SendMessage() // Create a message object object
+                    .setChatId(id)
+                    .setText(msg);
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+
     }
 
     @Override
