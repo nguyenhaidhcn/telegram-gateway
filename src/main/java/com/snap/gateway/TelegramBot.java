@@ -213,6 +213,11 @@ public class TelegramBot extends TelegramLongPollingBot  {
             id = ShareObjectQuote.chat_id_balance;
         }
 
+        if(msg.contains("TOMO"))
+        {
+            id = ShareObjectQuote.chat_id_tomo;
+        }
+
 
         SendMessage message = new SendMessage() // Create a message object object
                 .setChatId(id)
@@ -229,10 +234,12 @@ public class TelegramBot extends TelegramLongPollingBot  {
         if(msg.contains("Ugrent")
                 || msg.contains("balance")
                 || msg.contains("Balance")
-                || msg.contains("NOT ENOUGH Balance to Order")
+//                || msg.contains("NOT ENOUGH Balance to Order")
                 || msg.contains("Account has insufficient balance")
                 )
         {
+            if(id == ShareObjectQuote.chat_id_tomo)
+            {return;}
             id = ShareObjectQuote.chat_id_ugrent;
             SendMessage message_ugrent = new SendMessage() // Create a message object object
                     .setChatId(id)
@@ -243,6 +250,8 @@ public class TelegramBot extends TelegramLongPollingBot  {
                 e.printStackTrace();
             }
         }
+
+
 
 
 

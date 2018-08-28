@@ -56,6 +56,8 @@ public class ShareObjectQuote {
 
     public static long chat_id_ugrent =-313626904;
 
+    public static long chat_id_tomo = -277003625;
+
 
 
 }
