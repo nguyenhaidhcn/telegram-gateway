@@ -215,6 +215,11 @@ public class TelegramBot extends TelegramLongPollingBot  {
 
         if(msg.contains("TOMO"))
         {
+            if(msg.contains("HTTP status code was not OK"))
+            {
+                System.out.println(msg);
+                return;
+            }
             id = ShareObjectQuote.chat_id_tomo;
         }
 
@@ -234,10 +239,13 @@ public class TelegramBot extends TelegramLongPollingBot  {
         if(msg.contains("Ugrent")
                 || msg.contains("balance")
                 || msg.contains("Balance")
-                || !msg.contains("NOT ENOUGH Balance to Order")
                 || msg.contains("Account has insufficient balance")
                 )
         {
+            if(msg.contains("NOT ENOUGH Balance to Order"))
+            {
+                return;
+            }
             if(id == ShareObjectQuote.chat_id_tomo)
             {return;}
             id = ShareObjectQuote.chat_id_ugrent;
