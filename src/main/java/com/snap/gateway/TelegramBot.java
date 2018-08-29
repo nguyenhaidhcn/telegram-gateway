@@ -234,7 +234,7 @@ public class TelegramBot extends TelegramLongPollingBot  {
         if(msg.contains("Ugrent")
                 || msg.contains("balance")
                 || msg.contains("Balance")
-//                || msg.contains("NOT ENOUGH Balance to Order")
+                || !msg.contains("NOT ENOUGH Balance to Order")
                 || msg.contains("Account has insufficient balance")
                 )
         {
