@@ -52,7 +52,7 @@ public class ShareObjectQuote {
 
     public static long chat_id_balance =-237206539;
 
-    public static long chat_id_hedge =-195924043;
+    public static long chat_id_hedge =-395204434;
 
     public static long chat_id_ugrent =-313626904;
 

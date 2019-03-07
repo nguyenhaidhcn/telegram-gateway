@@ -237,8 +237,6 @@ public class TelegramBot extends TelegramLongPollingBot  {
         //in case ugrent
 
         if(msg.contains("Ugrent")
-                || msg.contains("balance")
-                || msg.contains("Balance")
                 || msg.contains("Account has insufficient balance")
                 )
         {
